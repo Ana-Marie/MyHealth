@@ -77,9 +77,8 @@ const goToInicial=()=>{
         </View>
       </View>
       <View style={{ justifyContent:'flex-end'}}>
-        <TouchableOpacity  style={styles.button} onPress={goToInicial}>
-        <Text style={styles.buttonText}>Entrar</Text>
-          </TouchableOpacity>
+         <TouchableOpacity  style={[styles.createAcount,styles.shadowProp,styles.elevation]} onPress={goToCriarConta}>
+            <Text style={styles.buttonText}>Criar minha conta</Text></TouchableOpacity>
       </View>
 
       </View>

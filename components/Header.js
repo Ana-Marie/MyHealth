@@ -6,7 +6,7 @@ const Header = (props)=>{
 
    return(
     <View style={styles.container} >
-      <TouchableOpacity style={styles.hamburgerMenu}>
+      <TouchableOpacity style={styles.hamburgerMenu} onPress={() => props.navigation.toggleDrawer()}>
         <View style={styles.rectangle}></View>
         <View style={styles.rectangle}></View>
         <View style={styles.rectangle}></View>

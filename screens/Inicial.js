@@ -3,15 +3,17 @@ import React, { useState } from 'react';
 import { View,Text,StyleSheet, ImageBackground, Image, Button, TouchableOpacity } from 'react-native';
 import Input from '../components/Input';
 import  LinearGradient from 'react-native-linear-gradient';
+import { useUserStore } from '../store/usuario';
 
 
 const Inicial = (props)=>{
   const [email,setEmail]=useState();
   const[password,setPassword]=useState();
+  const {fazerLogin} = useUserStore()
 
   const goToHome=()=>{
-    props.navigation.push('Home'); // Empilha tela
-    }
+    fazerLogin() // chama a funçâo de fazer login dentro do useUserStore
+    } 
     const goToCriarConta=()=>{
       props.navigation.push('CriarConta');
     }
