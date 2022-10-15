@@ -82,9 +82,10 @@ const EditarVacina = (props) => {
     }
     const result = await launchImageLibrary(options)
     if(result?.assets){
-      setComprovante(result.assets[0].uri);
-      console.log(comprovante)
-    
+      console.log('fui chamado')
+      let url=result.assets[0].uri
+      console.log(typeof url)
+      setComprovante(url.toString());
       return;
     }
 
@@ -110,8 +111,7 @@ const EditarVacina = (props) => {
           </TouchableOpacity>
         </View>
         <View style={styles.img}>
-          {comprovante=='empty'?<Text style={styles.label}> Faça o upload do seu comprovante</Text>:<Image source={{uri:{comprovante}}}></Image>}
-
+          {comprovante=='empty'?<Text style={styles.label}>{comprovante}</Text>:<Image source={{ uri: comprovante }} style={{ width: '100%', height: '100%' }} />}
         </View>
       </View>
 
@@ -205,9 +205,13 @@ const styles = StyleSheet.create({
 
   },
   img: {
-    backgroundColor: 'black',
-    width: 180,
-    heigth: 90,
+    backgroundColor: 'gray',
+    width: 200,
+    height:150,
+    display:'flex',
+    marginVertical:5,
+    alignSelf:'flex-end'
+   
   }
 
 
