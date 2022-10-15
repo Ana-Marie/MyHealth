@@ -1,14 +1,14 @@
 
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity,Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { launchImageLibrary } from 'react-native-image-picker';
 import Header from '../components/Header';
 import CalendarDatePicker from '../components/CalendarDatePicker';
 import Input from '../components/Input';
 import RadioGroup from 'react-native-radio-buttons-group';
 import GreenButton from '../components/GreenButton';
-import {useVacineStore} from '../store/vacinas';
-import { useDateStore } from '../store/date';
+import { useVacineStore } from '../store/vacinas';
+
 
 
 
@@ -74,29 +74,30 @@ const radioButtonsData = [{
 
 
 const NovaVacina = (props) => {
-
+  const { criarVacina, arrayVacinas } = useVacineStore();
 
   const [vaccineName, setVaccineName] = useState();
   const [radioButtons, setRadioButtons] = useState(radioButtonsData);
   const [comprovante, setComprovante] = useState('empty');
-  const [vaccinationDate,setVaccinationDate]=useState('');
-  const[nextVaccinationDate,setNextVaccinationDate]=useState('');
+  const [vaccinationDate, setVaccinationDate] = useState('');
+  const [nextVaccinationDate, setNextVaccinationDate] = useState('');
 
-  
-  const saveVaccine = ()=>{
-    
-    const vacinaObj ={
+
+  const saveVaccine = async() => {
+
+    const vacinaObj = {
       vaccineName: vaccineName,
       vaccinationDate: vaccinationDate,
-      dose:radioButtons,
+      dose: radioButtons,
       nextVaccination: nextVaccinationDate,
-      comprovante:comprovante,
-    
-    }
-   
+      comprovante: comprovante,
 
-  
-    console.log(vacinaObj);
+    }
+    await console.log(vacinaObj);
+    await criarVacina(vacinaObj);
+
+    
+
     props.navigation.navigate('Minhas Vacinas');
   }
 
@@ -109,7 +110,7 @@ const NovaVacina = (props) => {
       mediaType: 'photo'
     }
     const result = await launchImageLibrary(options)
-    if(result?.assets){
+    if (result?.assets) {
       setComprovante(result.assets[0].uri);
       return;
     }
@@ -136,7 +137,7 @@ const NovaVacina = (props) => {
           </TouchableOpacity>
         </View>
         <View style={styles.img}>
-          {comprovante=='empty'?<Text style={styles.label}> Faça o upload do comprovante da vacinação</Text>:<Image source={{ uri: comprovante }} style={{ width: '100%', height: '100%' }} />}
+          {comprovante == 'empty' ? <Text style={styles.label}> Faça o upload do comprovante da vacinação</Text> : <Image source={{ uri: comprovante }} style={{ width: '100%', height: '100%' }} />}
         </View>
         <View style={styles.calendarDatePicker}>
           <Text style={styles.label}>Próxima vacinação</Text>
@@ -238,11 +239,11 @@ const styles = StyleSheet.create({
   img: {
     backgroundColor: 'gray',
     width: 200,
-    height:150,
-    display:'flex',
-    marginVertical:5,
-    alignSelf:'flex-end'
-   
+    height: 150,
+    display: 'flex',
+    marginVertical: 5,
+    alignSelf: 'flex-end'
+
   }
 
 
