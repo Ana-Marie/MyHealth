@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { View,Text,StyleSheet,Platform,Button, TouchableOpacity,Image } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { useDateStore } from '../store/date';
 
 
-const CalendarDatePicker =()=>{
+const CalendarDatePicker =(props)=>{
+  const{text,setText}=props;
+  const{armazenarData}=useDateStore();
   const [date,setDate]= useState(new Date());
   const [show,setShow]=useState(false);
-  const[text,setText]=useState('');
   const onChange= (event,selectedDate)=>{
     const currentDate = selectedDate|| date;
     setShow(Platform.OS==='ios');

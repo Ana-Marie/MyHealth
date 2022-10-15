@@ -7,6 +7,9 @@ import CalendarDatePicker from '../components/CalendarDatePicker';
 import Input from '../components/Input';
 import RadioGroup from 'react-native-radio-buttons-group';
 import GreenButton from '../components/GreenButton';
+import {useVacineStore} from '../store/vacinas';
+import { useDateStore } from '../store/date';
+
 
 
 
@@ -76,18 +79,24 @@ const NovaVacina = (props) => {
   const [vaccineName, setVaccineName] = useState();
   const [radioButtons, setRadioButtons] = useState(radioButtonsData);
   const [comprovante, setComprovante] = useState('empty');
-
+  const [vaccinationDate,setVaccinationDate]=useState('');
+  const[nextVaccinationDate,setNextVaccinationDate]=useState('');
 
   
   const saveVaccine = ()=>{
+    
     const vacinaObj ={
       vaccineName: vaccineName,
-      vaccinationDate: new Date(),
+      vaccinationDate: vaccinationDate,
       dose:radioButtons,
-      nextVaccination: new Date(),
+      nextVaccination: nextVaccinationDate,
+      comprovante:comprovante,
     
     }
-    console.log("salvando");
+   
+
+  
+    console.log(vacinaObj);
     props.navigation.navigate('Minhas Vacinas');
   }
 
@@ -113,7 +122,7 @@ const NovaVacina = (props) => {
       <View style={styles.container}>
         <View style={styles.calendarDatePicker}>
           <Text style={styles.label}>Data de Vacinação</Text>
-          <CalendarDatePicker />
+          <CalendarDatePicker text={vaccinationDate} setText={setVaccinationDate} />
         </View>
         <Input label="Vacina" placeholder="Digite o nome da vacina..." keyboardType='default' value={vaccineName} setText={setVaccineName} hidePassword={false} labelStyle={styles.label} textInputStyle={styles.textInput} />
         <View style={{ flexDirection: 'row' }}>
@@ -131,7 +140,7 @@ const NovaVacina = (props) => {
         </View>
         <View style={styles.calendarDatePicker}>
           <Text style={styles.label}>Próxima vacinação</Text>
-          <CalendarDatePicker />
+          <CalendarDatePicker text={nextVaccinationDate} setText={setNextVaccinationDate} />
         </View>
         <GreenButton title="Cadastrar" onPressEvent={saveVaccine}></GreenButton>
       </View>

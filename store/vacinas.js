@@ -2,7 +2,7 @@ import { TouchableOpacity } from 'react-native'
 import { FlatList } from 'react-native-gesture-handler'
 import create from 'zustand'
 
-const useVacineStore = create((set, get) => ({
+ export const useVacineStore = create((set, get) => ({
     arrayVacinas: [], // Estado atual das vacinas
     criarVacina: (vacina) => {
         const { arrayVacinas } = get() // Pega o array de arrayVacinas

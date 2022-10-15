@@ -13,7 +13,6 @@ const Home = (props) => {
   const goToNovaVacina = () => {
     props.navigation.navigate('NovaVacina');
   }
-  const { arrayVacinas} = useVacineStore
   const [search, setSearch] = useState();
   return (
     <View style={{ flex: 1 }}>
