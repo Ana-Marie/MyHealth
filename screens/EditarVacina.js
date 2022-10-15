@@ -69,8 +69,8 @@ const radioButtonsData = [{
 
 
 
-const EditarVacina = (props) => {
-
+const EditarVacina = ({navigation,route}) => {
+  console.log('fui chamado');
 
   const [vaccineName, setVaccineName] = useState();
   const [radioButtons, setRadioButtons] = useState(radioButtonsData);
@@ -78,7 +78,7 @@ const EditarVacina = (props) => {
   
   const saveVaccine = ()=>{
     console.log("salvando");
-    props.navigation.navigate('Minhas Vacinas');
+    navigation.navigate('Minhas Vacinas');
   }
 
   const onPressRadioButton = (radioButtonsArray) => {
@@ -99,7 +99,7 @@ const EditarVacina = (props) => {
 
   return (
     <View style={{ flex: 1 }}>
-      <Header text='Minhas vacinas' navigation={props.navigation} />
+      <Header text='Minhas vacinas' navigation={navigation} />
       <View style={styles.container}>
         <View style={styles.calendarDatePicker}>
           <Text style={styles.label}>Data de Vacinação</Text>

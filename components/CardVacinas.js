@@ -2,21 +2,28 @@ import React, { useState } from 'react';
 import { View,Text,StyleSheet, ImageBackground, Image, Button, TouchableOpacity,Dimensions } from 'react-native';
 
 const CardVacina =(props)=>{
-    const {vaccineName,dose,imgProf,nextDose,openEdition} =  props;
-     /*const {item,openEdition} = props*/
-    console.log(imgProf);
+    const {index,navigation, item} =props;
+   /* const {vaccine} = props.item*/
+  
+    const goToEditarVacina = () => {
+        navigation.navigate('EditarVacina',{index});
+    
+      }
+   
+  
     return(
-        <TouchableOpacity style={styles.card} onPress={openEdition}>
-            <Text style={styles.vaccineName}>{vaccineName}</Text>
+        
+       <TouchableOpacity style={styles.card} onPress={goToEditarVacina}>
+           <Text style={styles.vaccineName}>{item.vaccineName}</Text>
             <View style={styles.dose}>
-              <Text style={styles.doseText}>{dose}</Text>
+                    <Text style={styles.doseText}>{item.dose}</Text>
             </View>
             <View style={styles.imageContainer}>
-              <Image style={styles.img} source={imgProf}/>
+              <Image style={styles.img} source={{uri:item.comprovante}}/>
             </View>
 
-            <Text style={styles.nextDose}>{nextDose}</Text>
-        </TouchableOpacity>
+    <Text style={styles.nextDose}>{item.nextVaccination}</Text>
+    </TouchableOpacity>
 
     )
 
@@ -24,8 +31,7 @@ const CardVacina =(props)=>{
  const styles = StyleSheet.create({
     card:{
         backgroundColor:'white',
-        width: (Dimensions.get('window').width/2)-10,
-        height:125,
+        width: (Dimensions.get('window').width/2)-25,
         borderRadius:10,
         margin:5,
         display:'flex',
@@ -56,7 +62,7 @@ const CardVacina =(props)=>{
         backgroundColor:'black',
         width:'100%',
         marginTop:5,
-        height:60,
+        height:80,
     },
     nextDose:{
         color:'rgba(253, 121, 121, 1)',

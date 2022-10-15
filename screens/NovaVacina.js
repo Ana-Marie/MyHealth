@@ -81,14 +81,19 @@ const NovaVacina = (props) => {
   const [comprovante, setComprovante] = useState('empty');
   const [vaccinationDate, setVaccinationDate] = useState('');
   const [nextVaccinationDate, setNextVaccinationDate] = useState('');
-
+  
+  const getRadioButtonsValue = ()=>{
+  
+    const selected = radioButtons.filter((option)=>option.selected);
+    return selected[0].label;
+  }
 
   const saveVaccine = () => {
 
     const vacinaObj = {
       vaccineName: vaccineName,
       vaccinationDate: vaccinationDate,
-      dose: radioButtons,
+      dose: getRadioButtonsValue(),
       nextVaccination: nextVaccinationDate,
       comprovante: comprovante,
 
@@ -139,7 +144,15 @@ const NovaVacina = (props) => {
           </TouchableOpacity>
         </View>
         <View style={styles.img}>
-          {comprovante == 'empty' ? <Text style={styles.label}> Faça o upload do comprovante da vacinação</Text> : <Image source={{ uri: comprovante }} style={{ width: '100%', height: '100%' }} />}
+          {comprovante == 'empty' ? <View style={{ height:'100%'}}>
+          <Text style={{fontFamily:'AveriaLibre-Regular', color:'gray', fontSize:16,textAlign:'center', marginTop:5,}} >Faça upload do comprovante</Text>
+            <Image  style={{width:'45%',height:'60%',alignSelf:'center',marginTop:10,opacity:0.2}}source={require('../images/upload-arrow.png')}></Image>
+
+
+
+          </View>
+          :
+           <Image source={{ uri: comprovante }} style={{ width: '100%', height: '100%' }} />}
         </View>
         <View style={styles.calendarDatePicker}>
           <Text style={styles.label}>Próxima vacinação</Text>
@@ -239,12 +252,14 @@ const styles = StyleSheet.create({
 
   },
   img: {
-    backgroundColor: 'gray',
+    backgroundColor:'#e8e5e3',
     width: 200,
     height: 150,
     display: 'flex',
     marginVertical: 5,
-    alignSelf: 'flex-end'
+    alignSelf: 'flex-end',
+    borderRadius:5,
+    
 
   }
 
