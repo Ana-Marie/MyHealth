@@ -74,7 +74,7 @@ const radioButtonsData = [{
 
 
 const NovaVacina = (props) => {
-  const { criarVacina, arrayVacinas } = useVacineStore();
+  const {addVaccine,vaccines } = useVacineStore();
 
   const [vaccineName, setVaccineName] = useState();
   const [radioButtons, setRadioButtons] = useState(radioButtonsData);
@@ -83,7 +83,7 @@ const NovaVacina = (props) => {
   const [nextVaccinationDate, setNextVaccinationDate] = useState('');
 
 
-  const saveVaccine = async() => {
+  const saveVaccine = () => {
 
     const vacinaObj = {
       vaccineName: vaccineName,
@@ -93,8 +93,10 @@ const NovaVacina = (props) => {
       comprovante: comprovante,
 
     }
-    await console.log(vacinaObj);
-    await criarVacina(vacinaObj);
+    
+      addVaccine(vacinaObj);
+      console.log(vaccines);
+
 
     
 
