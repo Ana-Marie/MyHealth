@@ -6,6 +6,8 @@ import Header from '../components/Header';
 import CalendarDatePicker from '../components/CalendarDatePicker';
 import Input from '../components/Input';
 import RadioGroup from 'react-native-radio-buttons-group';
+import GreenButton from '../components/GreenButton';
+
 
 const radioButtonsData = [{
   id: '1',
@@ -68,9 +70,16 @@ const radioButtonsData = [{
 
 
 const EditarVacina = (props) => {
+
+
   const [vaccineName, setVaccineName] = useState();
   const [radioButtons, setRadioButtons] = useState(radioButtonsData);
   const [comprovante, setComprovante] = useState('empty')
+  
+  const saveVaccine = ()=>{
+    console.log("salvando");
+    props.navigation.navigate('Minhas Vacinas');
+  }
 
   const onPressRadioButton = (radioButtonsArray) => {
     setRadioButtons(radioButtonsArray);
@@ -82,10 +91,7 @@ const EditarVacina = (props) => {
     }
     const result = await launchImageLibrary(options)
     if(result?.assets){
-      console.log('fui chamado')
-      let url=result.assets[0].uri
-      console.log(typeof url)
-      setComprovante(url.toString());
+      setComprovante(result.assets[0].uri);
       return;
     }
 
@@ -113,7 +119,13 @@ const EditarVacina = (props) => {
         <View style={styles.img}>
           {comprovante=='empty'?<Text style={styles.label}>{comprovante}</Text>:<Image source={{ uri: comprovante }} style={{ width: '100%', height: '100%' }} />}
         </View>
+        <View style={styles.calendarDatePicker}>
+          <Text style={styles.label}>Próxima vacinação</Text>
+          <CalendarDatePicker />
+        </View>
+        <GreenButton title="Cadastrar" onPressEvent={saveVaccine}></GreenButton>
       </View>
+
 
 
     </View>

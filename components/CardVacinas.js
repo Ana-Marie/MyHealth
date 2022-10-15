@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { View,Text,StyleSheet, ImageBackground, Image, Button, TouchableOpacity } from 'react-native';
+import { View,Text,StyleSheet, ImageBackground, Image, Button, TouchableOpacity,Dimensions } from 'react-native';
 
 const CardVacina =(props)=>{
     const {vaccineName,dose,imgProf,nextDose,openEdition} =  props;
-
+     /*const {item,openEdition} = props*/
     console.log(imgProf);
     return(
         <TouchableOpacity style={styles.card} onPress={openEdition}>
@@ -24,7 +24,7 @@ const CardVacina =(props)=>{
  const styles = StyleSheet.create({
     card:{
         backgroundColor:'white',
-        width:150,
+        width: (Dimensions.get('window').width/2)-10,
         height:125,
         borderRadius:10,
         margin:5,
