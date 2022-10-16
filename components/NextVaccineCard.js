@@ -1,10 +1,11 @@
 import React from 'react';
 import { View,Text,StyleSheet } from 'react-native';
-const NextVaccineCard = ()=>{
+const NextVaccineCard = (props)=>{
+  const {item}=props
   return(
     <View style={styles.container}>
-      <Text style={styles.texto}>Sarampo</Text>
-      <Text style={styles.date}> 24/10/2022</Text>
+      <Text style={styles.texto}>{item.vaccineName}</Text>
+      <Text style={styles.date}> {item.nextVaccination}</Text>
     </View>
   )
 
@@ -12,7 +13,7 @@ const NextVaccineCard = ()=>{
 }
 const styles= StyleSheet.create({
     container:{
-        width:'90%',
+        width:'95%',
         height:80,
         backgroundColor:'white',
         borderRadius:5,

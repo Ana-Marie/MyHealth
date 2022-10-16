@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { View,Text,StyleSheet, ImageBackground, Image, Button, TouchableOpacity,Dimensions } from 'react-native';
-
+import { useVacineStore } from '../store/vacinas';
 const CardVacina =(props)=>{
     const {navigation, item,index} = props;
    /* const {vaccine} = props.item*/
-  
+    const {vaccines} = useVacineStore();
+    const vaccine = vaccines[index];
     const goToEditarVacina = () => {
         navigation.navigate('EditarVacina',{index});  
       }
@@ -13,15 +14,15 @@ const CardVacina =(props)=>{
     return(
         
        <TouchableOpacity style={styles.card} onPress={goToEditarVacina}>
-           <Text style={styles.vaccineName}>{item.vaccineName}</Text>
+           <Text style={styles.vaccineName}>{vaccine.vaccineName}</Text>
             <View style={styles.dose}>
-                    <Text style={styles.doseText}>{item.dose}</Text>
+                    <Text style={styles.doseText}>{vaccine.dose}</Text>
             </View>
             <View style={styles.imageContainer}>
-              <Image style={styles.img} source={{uri:item.comprovante}}/>
+              <Image style={styles.img} source={{uri:vaccine.comprovante}}/>
             </View>
 
-    <Text style={styles.nextDose}>{item.nextVaccination}</Text>
+    <Text style={styles.nextDose}>{vaccine.nextVaccination}</Text>
     </TouchableOpacity>
 
     )
