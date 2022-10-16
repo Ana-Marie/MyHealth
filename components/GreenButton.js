@@ -13,7 +13,7 @@ const GreenButton = (props) => {
 }
 const styles = StyleSheet.create({
     button: {
-        elevation: 10,
+        elevation: 5,
         shadowColor: 'black',
         shadowOffset: { width: -2, height: 4 },
         shadowOpacity: 0.2,

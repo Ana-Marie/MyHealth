@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, Modal } from 'react-native';
 import { launchImageLibrary } from 'react-native-image-picker';
 import Header from '../components/Header';
 import CalendarDatePicker from '../components/CalendarDatePicker';
@@ -8,6 +8,8 @@ import Input from '../components/Input';
 import RadioGroup from 'react-native-radio-buttons-group';
 import GreenButton from '../components/GreenButton';
 import { useVacineStore } from '../store/vacinas';
+import Dialog, { DialogContent } from 'react-native-popup-dialog';
+import DialogPopUp from '../components/DialogPopUp';
 
 
 const radioButtonsData = [{
@@ -70,52 +72,94 @@ const radioButtonsData = [{
   selected: false,
 }]
 const EditarVacina = ({ navigation, route }) => {
- 
-  const { index } = route.params;
-  const { vaccines,updateVaccine } = useVacineStore();
-  const vaccine = vaccines[index];
 
-  
-  
-  
+  const { index } = route.params;
+  const { vaccines, updateVaccine, removeVaccine } = useVacineStore();
+  const vaccine = vaccines[index];
+  const [isDialogVisible, setDialogVisible] = useState(false)
   const changeRadioButtonsValue = () => {
-    
+console.log('index'+index)
     const selected = radioButtonsData.map((option) => {
-      
+
+
       return {
         id: option.id,
         label: option.label,
         value: option.value,
         labelStyle: {
-          color:option.labelStyle.color,
+          color: option.labelStyle.color,
           fontFamily: option.labelStyle.fontFamily,
           fontSize: option.labelStyle.fontSize,
         },
         color: option.color,
         borderColor: option.borderColor,
         size: option.size,
-        selected: option.label==vaccine.dose,
+        selected: option.label == vaccine.dose,
 
       }
 
 
+
+
     });
 
-    
+
     return selected;
 
   }
-  const selected = changeRadioButtonsValue();
-  const [vaccineName, setVaccineName] = useState(vaccine.vaccineName);
-  const [radioButtons, setRadioButtons] = useState(selected);
-  const [comprovante, setComprovante] = useState(vaccine.comprovante);
-  const [vaccinationDate, setVaccinationDate] = useState(vaccine.vaccinationDate);
-  const [nextVaccinationDate, setNextVaccinationDate] = useState(vaccine.nextVaccination);
+  
+  if (vaccine) {
+    const selected = changeRadioButtonsValue();
+    var retorno = {
+
+      vaccineName: vaccine.vaccineName,
+      radioButtons: selected,
+      comprovante: vaccine.comprovante,
+      vaccinationDate: vaccine.vaccinationDate,
+      nextVaccinationDate: vaccine.nextVaccination,
+    }
+  } else {
+    var retorno = {
+      vaccineName: '',
+      radioButtons: radioButtonsData,
+      comprovante: 'empty',
+      vaccinationDate: '',
+      nextVaccinationDate: '',
+
+    }
+  }
+
+
 
 
 
   
+
   
+  const [vaccineName, setVaccineName] = useState(retorno.vaccineName);
+  const [radioButtons, setRadioButtons] = useState(retorno.radioButtons);
+  const [comprovante, setComprovante] = useState(retorno.comprovante);
+  const [vaccinationDate, setVaccinationDate] = useState(retorno.vaccinationDate);
+  const [nextVaccinationDate, setNextVaccinationDate] = useState(retorno.nextVaccinationDate);
+
+
+
+
+
+  const deleteVaccine = () => {
+    navigation.navigate('Minhas Vacinas');
+    removeVaccine(index);
+
+
+  }
+
+
+
+  const openDialog = () => {
+
+    setDialogVisible(true);
+  }
+
   const onPressRadioButton = (radioButtonsArray) => {
     setRadioButtons(radioButtonsArray);
   }
@@ -131,9 +175,9 @@ const EditarVacina = ({ navigation, route }) => {
     }
 
   }
-  const getRadioButtonsValue = ()=>{
-  
-    const selected = radioButtons.filter((option)=>option.selected);
+  const getRadioButtonsValue = () => {
+
+    const selected = radioButtons.filter((option) => option.selected);
     return selected[0].label;
   }
 
@@ -147,10 +191,11 @@ const EditarVacina = ({ navigation, route }) => {
       comprovante: comprovante,
 
     }
-   
-    updateVaccine(vacinaObj,index)
+
+    updateVaccine(vacinaObj, index)
     navigation.navigate('Minhas Vacinas');
   }
+
 
   return (
     <View style={{ flex: 1 }}>
@@ -179,15 +224,32 @@ const EditarVacina = ({ navigation, route }) => {
           <CalendarDatePicker text={nextVaccinationDate} setText={setNextVaccinationDate} />
         </View>
         <GreenButton title="Salvar alterações" onPressEvent={saveVaccine}></GreenButton>
-      </View>
 
+        <TouchableOpacity style={[styles.button]} onPress={openDialog}>
+          <Image style={{ alignSelf: 'center', width: 22, height: 22 }} source={require('../images/trash.png')}></Image>
+          <Text style={styles.buttonText}>Excluir</Text>
+        </TouchableOpacity>
+        <Modal
+          style={{ justifyContent: 'center', alignItems: 'center' }}
+          visible={isDialogVisible}
+          transparent={true}
+          animationType='fade'
+          onRequestClose={() => {
+            setDialogVisible(false);
+          }}>
+
+          <DialogPopUp setDialogVisible={setDialogVisible} deleteVaccine={deleteVaccine} />
+
+        </Modal>
+
+      </View>
 
 
     </View>
   )
 
-
 }
+
 
 
 const styles = StyleSheet.create({
@@ -279,7 +341,34 @@ const styles = StyleSheet.create({
     marginVertical: 5,
     alignSelf: 'flex-end'
 
-  }
+  },
+  button: {
+    elevation: 5,
+    shadowColor: 'black',
+    shadowOffset: { width: -2, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    backgroundColor: '#FD7979',
+    width: 120,
+    height: 40,
+    alignSelf: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: '#FD7979',
+    marginVertical: 30,
+    flexDirection: 'row',
+
+
+
+  },
+  buttonText: {
+    fontSize: 20,
+    fontFamily: 'AveriaLibre-Regular',
+    color: 'white',
+    alignSelf: 'center',
+
+  },
+
 
 
 })

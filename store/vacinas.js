@@ -32,6 +32,11 @@ export const useVacineStore = create((set) => ({
            
         })
     ),
+    removeVaccine:(index)=> set(
+        produce((draft)=>{
+            draft.vaccines.splice(index,1);
+        })
+    )
 
 
 
