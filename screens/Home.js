@@ -32,8 +32,7 @@ const Home = (props) => {
           </View>:
           <FlatList style={{height:480, width:'100%', marginVertical:5}}
             data={vaccines}
-            renderItem={({ item,index }) => <CardVacina navigation={props.navigation} item={item} />} numColumns={2} />
-
+            renderItem={({ item,index }) => <CardVacina navigation={props.navigation} item={item} index={vaccines.length===0?null:index} />} numColumns={2} />
           }
     
         </View>

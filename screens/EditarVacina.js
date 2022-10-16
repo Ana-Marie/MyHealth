@@ -1,12 +1,13 @@
 
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity,Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { launchImageLibrary } from 'react-native-image-picker';
 import Header from '../components/Header';
 import CalendarDatePicker from '../components/CalendarDatePicker';
 import Input from '../components/Input';
 import RadioGroup from 'react-native-radio-buttons-group';
 import GreenButton from '../components/GreenButton';
+import { useVacineStore } from '../store/vacinas';
 
 
 const radioButtonsData = [{
@@ -21,6 +22,7 @@ const radioButtonsData = [{
   color: 'rgba(65, 158, 215, 1)',
   borderColor: 'white',
   size: 12,
+  selected: false,
 },
 {
   id: '2',
@@ -36,6 +38,7 @@ const radioButtonsData = [{
   color: 'rgba(65, 158, 215, 1)',
   borderColor: 'white',
   size: 12,
+  selected: false,
 },
 {
   id: '3',
@@ -50,6 +53,7 @@ const radioButtonsData = [{
   color: 'rgba(65, 158, 215, 1)',
   borderColor: 'white',
   size: 12,
+  selected: false,
 },
 {
   id: '4',
@@ -60,27 +64,58 @@ const radioButtonsData = [{
     fontFamily: 'AveriaLibre-Regular',
     fontSize: 12,
   },
-
   color: 'rgba(65, 158, 215, 1)',
   borderColor: 'white',
   size: 12,
+  selected: false,
 }]
+const EditarVacina = ({ navigation, route }) => {
+ 
+  const { index } = route.params;
+  const { vaccines,updateVaccine } = useVacineStore();
+  const vaccine = vaccines[index];
 
-
-
-
-const EditarVacina = ({navigation,route}) => {
-  console.log('fui chamado');
-
-  const [vaccineName, setVaccineName] = useState();
-  const [radioButtons, setRadioButtons] = useState(radioButtonsData);
-  const [comprovante, setComprovante] = useState('empty')
   
-  const saveVaccine = ()=>{
-    console.log("salvando");
-    navigation.navigate('Minhas Vacinas');
-  }
+  
+  
+  const changeRadioButtonsValue = () => {
+    
+    const selected = radioButtonsData.map((option) => {
+      
+      return {
+        id: option.id,
+        label: option.label,
+        value: option.value,
+        labelStyle: {
+          color:option.labelStyle.color,
+          fontFamily: option.labelStyle.fontFamily,
+          fontSize: option.labelStyle.fontSize,
+        },
+        color: option.color,
+        borderColor: option.borderColor,
+        size: option.size,
+        selected: option.label==vaccine.dose,
 
+      }
+
+
+    });
+
+    
+    return selected;
+
+  }
+  const selected = changeRadioButtonsValue();
+  const [vaccineName, setVaccineName] = useState(vaccine.vaccineName);
+  const [radioButtons, setRadioButtons] = useState(selected);
+  const [comprovante, setComprovante] = useState(vaccine.comprovante);
+  const [vaccinationDate, setVaccinationDate] = useState(vaccine.vaccinationDate);
+  const [nextVaccinationDate, setNextVaccinationDate] = useState(vaccine.nextVaccination);
+
+
+
+  
+  
   const onPressRadioButton = (radioButtonsArray) => {
     setRadioButtons(radioButtonsArray);
   }
@@ -90,11 +125,31 @@ const EditarVacina = ({navigation,route}) => {
       mediaType: 'photo'
     }
     const result = await launchImageLibrary(options)
-    if(result?.assets){
+    if (result?.assets) {
       setComprovante(result.assets[0].uri);
       return;
     }
 
+  }
+  const getRadioButtonsValue = ()=>{
+  
+    const selected = radioButtons.filter((option)=>option.selected);
+    return selected[0].label;
+  }
+
+  const saveVaccine = () => {
+
+    const vacinaObj = {
+      vaccineName: vaccineName,
+      vaccinationDate: vaccinationDate,
+      dose: getRadioButtonsValue(),
+      nextVaccination: nextVaccinationDate,
+      comprovante: comprovante,
+
+    }
+   
+    updateVaccine(vacinaObj,index)
+    navigation.navigate('Minhas Vacinas');
   }
 
   return (
@@ -103,7 +158,7 @@ const EditarVacina = ({navigation,route}) => {
       <View style={styles.container}>
         <View style={styles.calendarDatePicker}>
           <Text style={styles.label}>Data de Vacinação</Text>
-          <CalendarDatePicker />
+          <CalendarDatePicker text={vaccinationDate} setText={setVaccinationDate} />
         </View>
         <Input label="Vacina" placeholder="Digite o nome da vacina..." keyboardType='default' value={vaccineName} setText={setVaccineName} hidePassword={false} labelStyle={styles.label} textInputStyle={styles.textInput} />
         <View style={{ flexDirection: 'row' }}>
@@ -117,13 +172,13 @@ const EditarVacina = ({navigation,route}) => {
           </TouchableOpacity>
         </View>
         <View style={styles.img}>
-          {comprovante=='empty'?<Text style={styles.label}>{comprovante}</Text>:<Image source={{ uri: comprovante }} style={{ width: '100%', height: '100%' }} />}
+          {comprovante == 'empty' ? <Text style={styles.label}>{comprovante}</Text> : <Image source={{ uri: comprovante }} style={{ width: '100%', height: '100%' }} />}
         </View>
         <View style={styles.calendarDatePicker}>
           <Text style={styles.label}>Próxima vacinação</Text>
-          <CalendarDatePicker />
+          <CalendarDatePicker text={nextVaccinationDate} setText={setNextVaccinationDate} />
         </View>
-        <GreenButton title="Cadastrar" onPressEvent={saveVaccine}></GreenButton>
+        <GreenButton title="Salvar alterações" onPressEvent={saveVaccine}></GreenButton>
       </View>
 
 
@@ -219,11 +274,11 @@ const styles = StyleSheet.create({
   img: {
     backgroundColor: 'gray',
     width: 200,
-    height:150,
-    display:'flex',
-    marginVertical:5,
-    alignSelf:'flex-end'
-   
+    height: 150,
+    display: 'flex',
+    marginVertical: 5,
+    alignSelf: 'flex-end'
+
   }
 
 

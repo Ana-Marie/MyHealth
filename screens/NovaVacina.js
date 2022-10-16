@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { launchImageLibrary } from 'react-native-image-picker';
 import Header from '../components/Header';
@@ -74,13 +74,56 @@ const radioButtonsData = [{
 
 
 const NovaVacina = (props) => {
-  const {addVaccine,vaccines } = useVacineStore();
-
   const [vaccineName, setVaccineName] = useState();
   const [radioButtons, setRadioButtons] = useState(radioButtonsData);
   const [comprovante, setComprovante] = useState('empty');
   const [vaccinationDate, setVaccinationDate] = useState('');
   const [nextVaccinationDate, setNextVaccinationDate] = useState('');
+  const {addVaccine,vaccines } = useVacineStore();
+  const resetRadioButtonsValue = () => {
+
+    const reseted = radioButtonsData.map((option) => {
+      
+      return {
+        id: option.id,
+        label: option.label,
+        value: option.value,
+        labelStyle: {
+          color:option.labelStyle.color,
+          fontFamily: option.labelStyle.fontFamily,
+          fontSize: option.labelStyle.fontSize,
+        },
+        color: option.color,
+        borderColor: option.borderColor,
+        size: option.size,
+        selected: false,
+
+      }
+
+
+    });
+
+    
+    return reseted;
+
+  }
+  const resetedRadiButton = resetRadioButtonsValue();
+
+  const reset = ()=>{
+    if(vaccines.length>0){
+      setVaccineName('');
+      setRadioButtons(resetedRadiButton);
+      setComprovante('empty');
+      setNextVaccinationDate('');
+      setVaccinationDate('');
+
+    }
+  
+  }
+  
+  useEffect(() => {   reset()  },[vaccines]);
+ 
+  
   
   const getRadioButtonsValue = ()=>{
   
@@ -100,11 +143,6 @@ const NovaVacina = (props) => {
     }
     
       addVaccine(vacinaObj);
-      console.log(vaccines);
-
-
-    
-
     props.navigation.navigate('Minhas Vacinas');
   }
 

@@ -2,12 +2,11 @@ import React, { useState } from 'react';
 import { View,Text,StyleSheet, ImageBackground, Image, Button, TouchableOpacity,Dimensions } from 'react-native';
 
 const CardVacina =(props)=>{
-    const {index,navigation, item} =props;
+    const {navigation, item,index} = props;
    /* const {vaccine} = props.item*/
   
     const goToEditarVacina = () => {
-        navigation.navigate('EditarVacina',{index});
-    
+        navigation.navigate('EditarVacina',{index});  
       }
    
   
