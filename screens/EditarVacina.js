@@ -147,9 +147,10 @@ console.log('index'+index)
 
 
   const deleteVaccine = () => {
-    navigation.navigate('Minhas Vacinas');
+    setDialogVisible(false);
+    navigation.goBack();
     removeVaccine(index);
-
+    
 
   }
 
@@ -193,7 +194,7 @@ console.log('index'+index)
     }
 
     updateVaccine(vacinaObj, index)
-    navigation.navigate('Minhas Vacinas');
+    navigation.goBack();
   }
 
 
