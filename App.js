@@ -22,14 +22,15 @@ const DrawerStack = () => {
   return (
   <Drawer.Navigator 
     screenOptions={{
-      headerShown: false
+      headerShown: false,
+      unmountOnBlur: true
     }}
     drawerContent={(props) => <DrawerMenu {...props} /> }
     >
     <Drawer.Screen name='Minhas Vacinas' component={Home} options={{drawerIcon: () => (<Image source={require('./images/icon-vaccine.png')}/>)}}/>
     <Drawer.Screen name="Proximas Vacinas" component={ProximasVacinas} options={{drawerIcon: () => (<Image source={require('./images/calendar1.png')}/>)}}/>
-    <Drawer.Screen name="EditarVacina" component={EditarVacina}/> 
-    <Drawer.Screen name="NovaVacina" component={NovaVacina}/> 
+    <Drawer.Screen name="EditarVacina" component={EditarVacina} options={{ drawerItemStyle: {display: 'none'}}}/> 
+    <Drawer.Screen name="NovaVacina" component={NovaVacina} options={{ drawerItemStyle: {display: 'none'}}}/>  
 
   </Drawer.Navigator>
 )

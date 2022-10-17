@@ -11,6 +11,7 @@ const Home = (props) => {
     props.navigation.navigate('NovaVacina');
   }
   const [search, setSearch] = useState();
+  console.log(vaccines);
   return (
     <View style={{ flex: 1 }}>
       <Header text='Minhas vacinas' navigation={props.navigation}></Header>

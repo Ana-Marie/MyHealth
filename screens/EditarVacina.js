@@ -192,7 +192,7 @@ console.log('index'+index)
       comprovante: comprovante,
 
     }
-
+console.log({vacinaObj});
     updateVaccine(vacinaObj, index)
     navigation.goBack();
   }

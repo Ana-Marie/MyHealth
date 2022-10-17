@@ -110,18 +110,17 @@ const NovaVacina = (props) => {
   const resetedRadiButton = resetRadioButtonsValue();
 
   const reset = ()=>{
-    if(vaccines.length>0){
+    // if(vaccines.length>0){
       setVaccineName('');
       setRadioButtons(resetedRadiButton);
       setComprovante('empty');
       setNextVaccinationDate('');
       setVaccinationDate('');
 
-    }
+    // }
   
   }
   
-  useEffect(() => {   reset()  },[vaccines]);
  
   
   
@@ -143,6 +142,7 @@ const NovaVacina = (props) => {
     }
     
       addVaccine(vacinaObj);
+      // reset() 
     props.navigation.navigate('Minhas Vacinas');
   }
 
@@ -161,6 +161,7 @@ const NovaVacina = (props) => {
     }
 
   }
+  
 
   return (
     <View style={{ flex: 1 }}>
