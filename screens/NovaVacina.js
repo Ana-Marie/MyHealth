@@ -25,6 +25,7 @@ const radioButtonsData = [{
   color: 'rgba(65, 158, 215, 1)',
   borderColor: 'white',
   size: 12,
+  selected:false,
 },
 {
   id: '2',
@@ -34,12 +35,14 @@ const radioButtonsData = [{
     color: 'white',
     fontFamily: 'AveriaLibre-Regular',
     fontSize: 12,
+   
 
   },
 
   color: 'rgba(65, 158, 215, 1)',
   borderColor: 'white',
   size: 12,
+  selected:false,
 },
 {
   id: '3',
@@ -49,11 +52,13 @@ const radioButtonsData = [{
     color: 'white',
     fontFamily: 'AveriaLibre-Regular',
     fontSize: 12,
+    
   },
 
   color: 'rgba(65, 158, 215, 1)',
   borderColor: 'white',
   size: 12,
+  selected:false,
 },
 {
   id: '4',
@@ -63,11 +68,13 @@ const radioButtonsData = [{
     color: 'white',
     fontFamily: 'AveriaLibre-Regular',
     fontSize: 12,
+    
   },
 
   color: 'rgba(65, 158, 215, 1)',
   borderColor: 'white',
   size: 12,
+  selected:false,
 }]
 
 
@@ -75,13 +82,12 @@ const radioButtonsData = [{
 
 const NovaVacina = (props) => {
   const [vaccineName, setVaccineName] = useState();
-  const [radioButtons, setRadioButtons] = useState(radioButtonsData);
   const [comprovante, setComprovante] = useState('empty');
   const [vaccinationDate, setVaccinationDate] = useState('');
   const [nextVaccinationDate, setNextVaccinationDate] = useState('');
   const {addVaccine,vaccines } = useVacineStore();
   const resetRadioButtonsValue = () => {
-
+    
     const reseted = radioButtonsData.map((option) => {
       
       return {
@@ -97,29 +103,20 @@ const NovaVacina = (props) => {
         borderColor: option.borderColor,
         size: option.size,
         selected: false,
-
+        
       }
-
-
+      
+      
     });
-
+    
     
     return reseted;
-
+    
   }
   const resetedRadiButton = resetRadioButtonsValue();
-
-  const reset = ()=>{
-    // if(vaccines.length>0){
-      setVaccineName('');
-      setRadioButtons(resetedRadiButton);
-      setComprovante('empty');
-      setNextVaccinationDate('');
-      setVaccinationDate('');
-
-    // }
+  const [radioButtons, setRadioButtons] = useState(resetedRadiButton);
   
-  }
+  
   
  
   
@@ -142,7 +139,7 @@ const NovaVacina = (props) => {
     }
     
       addVaccine(vacinaObj);
-      // reset() 
+    
     props.navigation.navigate('Minhas Vacinas');
   }
 

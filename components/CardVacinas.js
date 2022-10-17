@@ -2,10 +2,30 @@ import React, { useState } from 'react';
 import { View,Text,StyleSheet, ImageBackground, Image, Button, TouchableOpacity,Dimensions } from 'react-native';
 import { useVacineStore } from '../store/vacinas';
 const CardVacina =(props)=>{
-    const {navigation, item,index} = props;
+    const {navigation, item} = props;
    /* const {vaccine} = props.item*/
     const {vaccines} = useVacineStore();
-    const vaccine = vaccines[index];
+    const ArrayOriginal = [...vaccines]
+     const isEquals = (obj1,obj2)=> {        
+        return JSON.stringify(obj1) == JSON.stringify(obj2)
+    }
+  
+     const getIndex = ()=>{
+        
+        for ( i = 0 ; i<vaccines.length;i++){
+          
+            if(isEquals(vaccines[i],item)){
+                return i;
+            }
+        }
+        return null;
+     } 
+
+    const index = getIndex();
+    
+
+   
+    
     const goToEditarVacina = () => {
         navigation.navigate('EditarVacina',{index});  
       }
@@ -14,15 +34,15 @@ const CardVacina =(props)=>{
     return(
         
        <TouchableOpacity style={styles.card} onPress={goToEditarVacina}>
-           <Text style={styles.vaccineName}>{vaccine.vaccineName}</Text>
+           <Text style={styles.vaccineName}>{item.vaccineName}</Text>
             <View style={styles.dose}>
-                    <Text style={styles.doseText}>{vaccine.dose}</Text>
+                    <Text style={styles.doseText}>{item.dose}</Text>
             </View>
             <View style={styles.imageContainer}>
-              <Image style={styles.img} source={{uri:vaccine.comprovante}}/>
+              <Image style={styles.img} source={{uri:item.comprovante}}/>
             </View>
 
-    <Text style={styles.nextDose}>{vaccine.nextVaccination}</Text>
+    <Text style={styles.nextDose}>{item.nextVaccination}</Text>
     </TouchableOpacity>
 
     )

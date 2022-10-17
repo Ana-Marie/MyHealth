@@ -1,6 +1,6 @@
 
 import { NavigationContainer } from '@react-navigation/native';
-import{Text,Image} from 'react-native';
+import{Image} from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import{createDrawerNavigator}from'@react-navigation/drawer'
 import React from 'react';
@@ -23,11 +23,15 @@ const DrawerStack = () => {
   <Drawer.Navigator 
     screenOptions={{
       headerShown: false,
-      unmountOnBlur: true
+      unmountOnBlur: true,
+      drawerItemStyle:{ fontFamily:'AveriaLibre-Regular',
+      color:'rgba(65, 158, 215, 1)',
+      fontSize:20,}// não está funcionando
+      
     }}
     drawerContent={(props) => <DrawerMenu {...props} /> }
     >
-    <Drawer.Screen name='Minhas Vacinas' component={Home} options={{drawerIcon: () => (<Image source={require('./images/icon-vaccine.png')}/>)}}/>
+      <Drawer.Screen name='Minhas Vacinas' component={Home} options={{drawerIcon: () => (<Image source={require('./images/icon-vaccine.png')}/>)}}/>
     <Drawer.Screen name="Proximas Vacinas" component={ProximasVacinas} options={{drawerIcon: () => (<Image source={require('./images/calendar1.png')}/>)}}/>
     <Drawer.Screen name="EditarVacina" component={EditarVacina} options={{ drawerItemStyle: {display: 'none'}}}/> 
     <Drawer.Screen name="NovaVacina" component={NovaVacina} options={{ drawerItemStyle: {display: 'none'}}}/>  
@@ -43,8 +47,6 @@ const AuthStack = () => {
         <Stack.Screen name='CriarConta' component={CriarConta}/>
         <Stack.Screen name='RedefinirSenha' component={RedefinirSenha}/>
         
-        {/* <Stack.Screen name="EditarVacinas" component={EditarVacina}/> */}
-        {/* <Stack.Screen name="Drawer" component={DrawerStack}/> */}
       </Stack.Navigator>
   )
 }
@@ -62,8 +64,8 @@ const App = ()=>{
   
   
   )
-
-
 }
+
+
 
 export default App;

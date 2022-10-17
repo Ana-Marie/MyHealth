@@ -7,11 +7,30 @@ import GreenButton from '../components/GreenButton';
 import { useVacineStore } from '../store/vacinas';
 const Home = (props) => {
   const {vaccines} = useVacineStore()
+  const [vaccineList,setVaccineList] = useState(vaccines);
+  
   const goToNovaVacina = () => {
     props.navigation.navigate('NovaVacina');
   }
-  const [search, setSearch] = useState();
-  console.log(vaccines);
+  const [search, setSearch] = useState('');
+  const searchFilter =()=>{
+    console.log(search)
+    const result =  vaccines.filter((vaccine)=>vaccine.vaccineName.indexOf(search)>-1)
+    console.log(result)
+    if(search.length>0){
+       setVaccineList(result);// isso não está funcionando por que 
+    }else{
+       setVaccineList(vaccines)
+    }
+    console.log("RESULT",{result});
+    console.log("FILTRO",{vaccineList});
+    console.log("QUANTIDADE DE ITENS: ", vaccineList.length);
+  
+  } 
+  
+  
+
+
   return (
     <View style={{ flex: 1 }}>
       <Header text='Minhas vacinas' navigation={props.navigation}></Header>
@@ -19,19 +38,19 @@ const Home = (props) => {
 
         <View style={styles.search}>
           <Image source={require('../images/icon-search.png')}></Image>
-          <TextInput style={styles.input} placeholder="PESQUISAR VACINA..." keyboardType='default' value={search} onChangeText={setSearch} />
+          <TextInput style={styles.input} placeholder="PESQUISAR VACINA..." keyboardType='default' value={search} onChangeText={setSearch}  onEndEditing={searchFilter}/>
         </View>
 
-        <View style={{height:480, width:'100%', marginVertical:5, alignContent:'center'}}>
+        <View style={{height:450, width:'100%', marginVertical:5, alignContent:'center'}}>
           {vaccines.length===0?
           <View>
             <Text style={{fontFamily:'AveriaLibre-Regular', color:'white', fontSize:24,textAlign:'center', marginTop:20,}} >Você ainda não tem nenhuma Vacina Cadastrada </Text>
             <Image  style={{width:'70%', height:'70%',alignSelf:'center'}}source={require('../images/earth.png')}></Image>
 
           </View>:
-          <FlatList style={{height:480, width:'100%', marginVertical:5}}
-            data={vaccines}
-            renderItem={({ item,index }) => <CardVacina navigation={props.navigation} item={item} index={vaccines.length===0?null:index} />} numColumns={2} />
+          <FlatList style={{ width:'100%', marginVertical:5}}
+            data={vaccineList}
+            renderItem={({ item}) => <CardVacina navigation={props.navigation} item={item} />} numColumns={2} />
           }
     
         </View>

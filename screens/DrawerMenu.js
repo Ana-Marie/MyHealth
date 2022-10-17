@@ -6,7 +6,7 @@ import { useUserStore } from "../store/usuario"
 
 const DrawerMenu = (props) => {
     const {sair} = useUserStore();
-    const nome="Maria"
+    const nome="Usuário"
    
     return(
         <DrawerContentScrollView {...props} style={styles.drawerNavigation}>
@@ -14,7 +14,7 @@ const DrawerMenu = (props) => {
                 <Text style={styles.text}>Olá {nome} </Text>
             </View>
             <DrawerItemList {...props} />
-            <DrawerItem label={()=><Text style={styles.text}>Sair</Text>}  onPress={sair} icon={ () => <Image source={require('../images/logout.png')} style={styles.text}/>}/>
+            <DrawerItem label={()=><Text style={styles.text}>Sair</Text>}  onPress={sair} icon={ () => <Image source={require('../images/logout.png')} />}/>
         </DrawerContentScrollView>
     )
 }
@@ -37,7 +37,7 @@ const DrawerMenu = (props) => {
     text:{
         fontFamily:'AveriaLibre-Regular',
         color:'rgba(65, 158, 215, 1)',
-        fontSize:24,
+        fontSize:20,
 
     }
     
