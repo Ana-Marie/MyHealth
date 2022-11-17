@@ -6,6 +6,12 @@ import Input from '../components/Input';
 import RadioGroup from 'react-native-radio-buttons-group';
 import CalendarDatePicker from '../components/CalendarDatePicker';
 import GreenButton from '../components/GreenButton';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../config/firebase';
+
+
 
 const radioButtonsData = [{
   id: '1',
@@ -35,11 +41,33 @@ const radioButtonsData = [{
 }]
 const CriarConta = (props) => {
 
+
   const [fullName, setFullName] = useState();
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const [repeatPassword, setRepeatPassword] = useState();
   const [radioButtons, setRadioButtons] = useState(radioButtonsData)
+
+
+  const criarUsuario = () => {
+    /*  createUserWithEmailAndPassword(auth,email,password).then( (userCredencial)=>{
+      console.log("Usuario adicionado com  sucessso!")
+      console.log(JSON.stringify(userCredencial))
+      isPasswordsEquals();
+      goToInicial();
+      
+      
+    }).catch((error)=>{
+      console.log("Usuario adicionado com sucessso!")
+      console.log(JSON.stringify(userCredencial))
+
+    })*/
+    if (isPasswordsEquals()) {
+      
+      goToInicial();
+   
+
+  }
 
 
 
@@ -49,6 +77,12 @@ const CriarConta = (props) => {
   const goToInicial = () => {
     props.navigation.pop();
 
+  }
+
+  const isPasswordsEquals = () => {
+    if (password != repeatPassword) {
+      return false;
+    }
   }
 
 
@@ -74,11 +108,11 @@ const CriarConta = (props) => {
           <Input label="Senha" placeholder="Digite a sua senha..." keyboardType='default' value={password} setText={setPassword} hidePassword={true} labelStyle={styles.label} textInputStyle={styles.textInput} />
           <View>
             <Input label="Repita a senha" placeholder="Digite a sua senha..." keyboardType='default' value={repeatPassword} setText={setRepeatPassword} hidePassword={true} labelStyle={styles.label} textInputStyle={styles.textInput} />
-            <Text style={styles.errorMsg}>Senha não confere</Text>
+            {}
           </View>
         </View>
         <View style={{ justifyContent: 'flex-end' }}>
-          <GreenButton title="Cadastrar" onPressEvent={goToInicial} />
+          <GreenButton title="Cadastrar" onPressEvent={criarUsuario} />
         </View>
 
       </View>
@@ -101,6 +135,7 @@ const styles = StyleSheet.create({
     fontFamily: 'AveriaLibre-Regular',
     marginLeft: '40%',
     fontSize: 15,
+
 
   },
   calendarDatePicker: {

@@ -26,7 +26,7 @@ const DrawerStack = () => {
       unmountOnBlur: true,
       drawerItemStyle:{ fontFamily:'AveriaLibre-Regular',
       color:'rgba(65, 158, 215, 1)',
-      fontSize:20,}// não está funcionando
+      fontSize:20,}// não
       
     }}
     drawerContent={(props) => <DrawerMenu {...props} /> }
