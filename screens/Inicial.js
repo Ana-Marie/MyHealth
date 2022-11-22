@@ -5,12 +5,24 @@ import Input from '../components/Input';
 import LinearGradient from 'react-native-linear-gradient';
 import { useUserStore } from '../store/usuario';
 import GreenButton from '../components/GreenButton';
+import { signInWithEmailAndPassword } from 'firebase/auth'
+import { auth } from '../config/firebase'
 
 
 const Inicial = (props) => {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const { fazerLogin } = useUserStore()
+  const autenticarUsuario = () => {
+    signInWithEmailAndPassword(auth, email, password)
+    .then((userCredential) => {
+        console.log("Usuário autenticado com sucesso!")
+        goToHome();
+    })
+    .catch( () => {
+        console.log("Falha ao autenticar: " + error.message)
+    })
+}
 
   const goToHome = () => {
     fazerLogin() // chama a funçâo de fazer login dentro do useUserStore
@@ -36,7 +48,7 @@ const Inicial = (props) => {
           <Input label="Email" placeholder="Digite o seu email..." keyboardType='email-address' value={email} setText={setEmail} hidePassword={false} labelStyle={styles.label} textInputStyle={styles.textInput} />
           <Input label="Senha" placeholder="Digite a sua senha..." keyboardType='default' value={password} setText={setPassword} hidePassword={true} labelStyle={styles.label} textInputStyle={styles.textInput} />
           <Text style={styles.errorMsg}>E-mail e/ou senha inválidos</Text>
-          <GreenButton title="Entrar" onPressEvent={goToHome} />
+          <GreenButton title="Entrar" onPressEvent={autenticarUsuario} />
 
         </View>
         <TouchableOpacity style={[styles.createAcount, styles.shadowProp, styles.elevation]} onPress={goToCriarConta}>
@@ -82,6 +94,7 @@ const styles = StyleSheet.create({
     fontFamily: 'AveriaLibre-Regular',
     marginLeft: '20%',
     fontSize: 15,
+    
 
   },
   form: {

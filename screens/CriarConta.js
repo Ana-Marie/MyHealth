@@ -6,7 +6,7 @@ import Input from '../components/Input';
 import RadioGroup from 'react-native-radio-buttons-group';
 import CalendarDatePicker from '../components/CalendarDatePicker';
 import GreenButton from '../components/GreenButton';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../config/firebase';
@@ -46,44 +46,45 @@ const CriarConta = (props) => {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const [repeatPassword, setRepeatPassword] = useState();
-  const [radioButtons, setRadioButtons] = useState(radioButtonsData)
+  const [radioButtons, setRadioButtons] = useState(radioButtonsData);
+  const [DataNasc,setDataNasc] = useState();
 
 
   const criarUsuario = () => {
-    /*  createUserWithEmailAndPassword(auth,email,password).then( (userCredencial)=>{
+    createUserWithEmailAndPassword(auth, email, password).then((userCredencial) => {
       console.log("Usuario adicionado com  sucessso!")
       console.log(JSON.stringify(userCredencial))
-      isPasswordsEquals();
       goToInicial();
-      
-      
-    }).catch((error)=>{
-      console.log("Usuario adicionado com sucessso!")
-      console.log(JSON.stringify(userCredencial))
 
-    })*/
-    if (isPasswordsEquals()) {
       
-      goToInicial();
-   
 
+
+    }).catch((error) => {
+      console.log("Ocorreu um erro ao cadastrar usuário")
+      console.log("Erro: " + error.message)
+    })
   }
+  
 
 
 
   const onPressRadioButton = (radioButtonsArray) => {
     setRadioButtons(radioButtonsArray);
   }
+  const isPasswordsEquals = () => {
+    if (password != repeatPassword) {
+      return false;
+    }
+    else {
+      return true;
+    }
+  }
   const goToInicial = () => {
     props.navigation.pop();
 
   }
 
-  const isPasswordsEquals = () => {
-    if (password != repeatPassword) {
-      return false;
-    }
-  }
+  
 
 
 
@@ -108,7 +109,7 @@ const CriarConta = (props) => {
           <Input label="Senha" placeholder="Digite a sua senha..." keyboardType='default' value={password} setText={setPassword} hidePassword={true} labelStyle={styles.label} textInputStyle={styles.textInput} />
           <View>
             <Input label="Repita a senha" placeholder="Digite a sua senha..." keyboardType='default' value={repeatPassword} setText={setRepeatPassword} hidePassword={true} labelStyle={styles.label} textInputStyle={styles.textInput} />
-            {}
+
           </View>
         </View>
         <View style={{ justifyContent: 'flex-end' }}>
