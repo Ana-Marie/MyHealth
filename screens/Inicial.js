@@ -19,7 +19,7 @@ const Inicial = (props) => {
         console.log("Usuário autenticado com sucesso!")
         goToHome();
     })
-    .catch( () => {
+    .catch( (error) => {
         console.log("Falha ao autenticar: " + error.message)
     })
 }
@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     fontFamily: 'AveriaLibre-Regular',
     marginLeft: '20%',
     fontSize: 15,
-    
+
 
   },
   form: {
