@@ -9,7 +9,8 @@ import GreenButton from '../components/GreenButton';
 
 
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../config/firebase';
+import { auth,db } from '../config/firebase';
+import { addDoc, collection, getDoc, doc, updateDoc, deleteDoc } from "firebase/firestore"
 
 
 
@@ -53,7 +54,9 @@ const CriarConta = (props) => {
   const criarUsuario = () => {
     createUserWithEmailAndPassword(auth, email, password).then((userCredencial) => {
       console.log("Usuario adicionado com  sucessso!")
-      console.log(JSON.stringify(userCredencial))
+      const{uid} = userCredencial.user;
+      console.log(uid);
+      cadastrar(uid);
       goToInicial();
 
       
@@ -65,6 +68,23 @@ const CriarConta = (props) => {
     })
   }
   
+  const cadastrar = (userUID)=>{
+    addDoc(collection(db,"users"),{
+      fullName: fullName,
+      DataNasc: DataNasc,
+      sexo:getRadioButtonsValue(),
+      userUID: userUID,
+
+    }).then((result)=>{
+      console.log('Usuário Cadastrado com sucesso!');
+    }).catch((error)=>{
+      alert(error);
+    })
+  }
+  const getRadioButtonsValue = ()=>{
+    const selected = radioButtons.filter((option)=>option.selected);
+    return selected[0].label;
+  }
 
 
 
@@ -102,7 +122,7 @@ const CriarConta = (props) => {
           </View>
           <View style={styles.calendarDatePicker}>
             <Text style={styles.label}>Data de Nascimento</Text>
-            <CalendarDatePicker />
+            <CalendarDatePicker text={DataNasc} setText={setDataNasc} />
           </View>
 
           <Input label="Email" placeholder="Digite o seu email..." keyboardType='email-address' value={email} setText={setEmail} hidePassword={false} labelStyle={styles.label} textInputStyle={styles.textInput} />

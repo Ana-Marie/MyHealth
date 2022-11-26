@@ -8,6 +8,8 @@ import Input from '../components/Input';
 import RadioGroup from 'react-native-radio-buttons-group';
 import GreenButton from '../components/GreenButton';
 import { useVacineStore } from '../store/vacinas';
+import { db } from '../config/firebase';
+import { addDoc, collection, getDoc, doc, updateDoc, deleteDoc } from "firebase/firestore"
 
 
 
@@ -140,7 +142,29 @@ const NovaVacina = (props) => {
     
       addVaccine(vacinaObj);
     
-    props.navigation.navigate('Minhas Vacinas');
+   
+  }
+  const cadastrarVacina = (userVacs)=>{
+    let userDocRef = doc(db,'users','4z6hSv5nmduI7HiqF7xL') ;
+   
+      addDoc(collection(userDocRef, "vaccines"), {
+      vaccineName: vaccineName,
+      vaccinationDate: vaccinationDate,
+      dose: getRadioButtonsValue(),
+      nextVaccination: nextVaccinationDate,
+      comprovante: comprovante,
+
+        
+      })
+          .then((result) => {
+              //props.navigation.pop()
+              alert('Vacina cadastrado com sucesso!');
+              props.navigation.navigate('Minhas Vacinas');
+          })
+          .catch((error) => {
+              alert(error)
+          })
+  
   }
 
   const onPressRadioButton = (radioButtonsArray) => {
@@ -194,7 +218,7 @@ const NovaVacina = (props) => {
           <Text style={styles.label}>Próxima vacinação</Text>
           <CalendarDatePicker text={nextVaccinationDate} setText={setNextVaccinationDate} />
         </View>
-        <GreenButton title="Cadastrar" onPressEvent={saveVaccine}></GreenButton>
+        <GreenButton title="Cadastrar" onPressEvent={cadastrarVacina}></GreenButton>
       </View>
 
 
