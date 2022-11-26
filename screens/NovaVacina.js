@@ -1,6 +1,6 @@
 
 import React, { useState,useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, DrawerLayoutAndroidBase } from 'react-native';
 import { launchImageLibrary } from 'react-native-image-picker';
 import Header from '../components/Header';
 import CalendarDatePicker from '../components/CalendarDatePicker';
@@ -8,8 +8,9 @@ import Input from '../components/Input';
 import RadioGroup from 'react-native-radio-buttons-group';
 import GreenButton from '../components/GreenButton';
 import { useVacineStore } from '../store/vacinas';
-import { db } from '../config/firebase';
+import { db, storage } from '../config/firebase';
 import { addDoc, collection, getDoc, doc, updateDoc, deleteDoc } from "firebase/firestore"
+import { uploadBytes,ref, getDownloadURL } from 'firebase/storage';
 
 
 
@@ -129,7 +130,7 @@ const NovaVacina = (props) => {
     return selected[0].label;
   }
 
-  const saveVaccine = () => {
+  /*const saveVaccine = () => {
 
     const vacinaObj = {
       vaccineName: vaccineName,
@@ -143,16 +144,23 @@ const NovaVacina = (props) => {
       addVaccine(vacinaObj);
     
    
-  }
-  const cadastrarVacina = (userVacs)=>{
-    let userDocRef = doc(db,'users','4z6hSv5nmduI7HiqF7xL') ;
+  }*/
+  
+  const cadastrarVacina = async (userVacs)=>{
+    const data = await fetch(comprovante);
+    const blob = await data.blob();
+    const fileName = 'MyHealth/proofs/'+comprovante.split('-')[comprovante.split('-').length -1];
+    uploadBytes(ref(storage,fileName),blob)
+    .then((result)=>{
+      getDownloadURL(ref(storage,fileName)).then((url)=>{
+      let userDocRef = doc(db,'users','4z6hSv5nmduI7HiqF7xL') ;
    
       addDoc(collection(userDocRef, "vaccines"), {
       vaccineName: vaccineName,
       vaccinationDate: vaccinationDate,
       dose: getRadioButtonsValue(),
       nextVaccination: nextVaccinationDate,
-      comprovante: comprovante,
+      comprovante: url,
 
         
       })
@@ -164,6 +172,15 @@ const NovaVacina = (props) => {
           .catch((error) => {
               alert(error)
           })
+
+      })
+
+      console.log('arquivo enviado com sucesso !')
+    })
+    .catch((error)=>{
+      alert("Erro ao enviar o arquivo: "+error)
+    })
+    
   
   }
 
