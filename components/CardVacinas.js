@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { View,Text,StyleSheet, ImageBackground, Image, Button, TouchableOpacity,Dimensions } from 'react-native';
 import { useVacineStore } from '../store/vacinas';
+import { useDispatch } from 'react-redux'
+import { reducerSetVaccine } from '../redux/vaccineSlice';
 const CardVacina =(props)=>{
+    const dispatch = useDispatch();
     const {navigation, item} = props;
    /* const {vaccine} = props.item*/
     /*const {vaccines} = useVacineStore();
@@ -27,7 +30,8 @@ const CardVacina =(props)=>{
    
     
     const goToEditarVacina = () => {
-        navigation.navigate('EditarVacina',{index});  
+        dispatch(reducerSetVaccine(item))
+        navigation.navigate('EditarVacina');  
       }
    
   

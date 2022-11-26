@@ -10,6 +10,7 @@ import GreenButton from '../components/GreenButton';
 import { useVacineStore } from '../store/vacinas';
 import Dialog, { DialogContent } from 'react-native-popup-dialog';
 import DialogPopUp from '../components/DialogPopUp';
+import { useSelector } from 'react-redux'
 
 
 const radioButtonsData = [{
@@ -71,14 +72,14 @@ const radioButtonsData = [{
   size: 12,
   selected: false,
 }]
-const EditarVacina = ({ navigation, route }) => {
+const EditarVacina = ({ navigation}) => {
 
-  const { index } = route.params;
-  const { vaccines, updateVaccine, removeVaccine } = useVacineStore();
-  const vaccine = vaccines[index];
+ // const { index } = route.params;
+ // const { vaccines, updateVaccine, removeVaccine } = useVacineStore();
+ // const vaccine = vaccines[index];
+  const vaccine = useSelector((state) => state.vaccine)
   const [isDialogVisible, setDialogVisible] = useState(false)
   const changeRadioButtonsValue = () => {
-console.log('index'+index)
     const selected = radioButtonsData.map((option) => {
 
 
