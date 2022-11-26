@@ -10,7 +10,9 @@ import GreenButton from '../components/GreenButton';
 import { useVacineStore } from '../store/vacinas';
 import Dialog, { DialogContent } from 'react-native-popup-dialog';
 import DialogPopUp from '../components/DialogPopUp';
-import { useSelector } from 'react-redux'
+import { useSelector } from 'react-redux';
+import { db } from '../config/firebase';
+import { onSnapshot, query, collection,doc,updateDoc, deleteDoc  } from 'firebase/firestore';
 
 
 const radioButtonsData = [{
@@ -78,6 +80,7 @@ const EditarVacina = ({ navigation}) => {
  // const { vaccines, updateVaccine, removeVaccine } = useVacineStore();
  // const vaccine = vaccines[index];
   const vaccine = useSelector((state) => state.vaccine)
+  let userDocRef = doc(db, 'users', '4z6hSv5nmduI7HiqF7xL');
   const [isDialogVisible, setDialogVisible] = useState(false)
   const changeRadioButtonsValue = () => {
     const selected = radioButtonsData.map((option) => {
@@ -148,9 +151,17 @@ const EditarVacina = ({ navigation}) => {
 
 
   const deleteVaccine = () => {
-    setDialogVisible(false);
-    navigation.goBack();
-    removeVaccine(index);
+   
+   
+   // removeVaccine(index);
+   deleteDoc(doc(userDocRef, "vaccines",vaccine.id))
+        .then(() => {
+          setDialogVisible(false);
+          navigation.goBack();
+        })
+        .catch((error) => {
+            alert(error)
+        })
     
 
   }

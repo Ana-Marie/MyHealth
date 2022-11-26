@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 const initialValues = {
+    id:null,
     vaccineName: null,
     vaccinationDate: null,
     dose: null,
@@ -11,6 +12,7 @@ export const vaccineSlice = createSlice({
     initialState: initialValues,
     reducers: {
         reducerSetVaccine: (state, action) => {
+            state.id = action.payload.id,
             state.vaccineName =  action.payload.vaccineName,
             state.vaccinationDate= action.payload.vaccinationDate,
             state.dose= action.payload.dose,

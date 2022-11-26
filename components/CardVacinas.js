@@ -6,6 +6,7 @@ import { reducerSetVaccine } from '../redux/vaccineSlice';
 const CardVacina =(props)=>{
     const dispatch = useDispatch();
     const {navigation, item} = props;
+    
    /* const {vaccine} = props.item*/
     /*const {vaccines} = useVacineStore();
     const ArrayOriginal = [...vaccines]
@@ -30,6 +31,7 @@ const CardVacina =(props)=>{
    
     
     const goToEditarVacina = () => {
+        
         dispatch(reducerSetVaccine(item))
         navigation.navigate('EditarVacina');  
       }
