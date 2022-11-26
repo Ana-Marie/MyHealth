@@ -4,13 +4,13 @@ import { useVacineStore } from '../store/vacinas';
 const CardVacina =(props)=>{
     const {navigation, item} = props;
    /* const {vaccine} = props.item*/
-    const {vaccines} = useVacineStore();
+    /*const {vaccines} = useVacineStore();
     const ArrayOriginal = [...vaccines]
      const isEquals = (obj1,obj2)=> {        
         return JSON.stringify(obj1) == JSON.stringify(obj2)
     }
   
-     const getIndex = ()=>{
+     /*const getIndex = ()=>{
         
         for ( i = 0 ; i<vaccines.length;i++){
           
@@ -21,7 +21,7 @@ const CardVacina =(props)=>{
         return null;
      } 
 
-    const index = getIndex();
+    const index = getIndex();*/
     
 
    
