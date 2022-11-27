@@ -7,9 +7,8 @@ import CalendarDatePicker from '../components/CalendarDatePicker';
 import Input from '../components/Input';
 import RadioGroup from 'react-native-radio-buttons-group';
 import GreenButton from '../components/GreenButton';
-import { useVacineStore } from '../store/vacinas';
 import { db, storage } from '../config/firebase';
-import { addDoc, collection, doc, updateDoc, deleteDoc, query, where, onSnapshot, getDocs } from "firebase/firestore"
+import { addDoc, collection, doc } from "firebase/firestore"
 import { uploadBytes, ref, getDownloadURL } from 'firebase/storage';
 import { useSelector } from 'react-redux'
 
@@ -89,8 +88,6 @@ const NovaVacina = (props) => {
   const [vaccinationDate, setVaccinationDate] = useState('');
   const [nextVaccinationDate, setNextVaccinationDate] = useState('');
   const userDocID = useSelector((state) => state.user.userID);
-
-  // const {addVaccine,vaccines } = useVacineStore();
   const resetRadioButtonsValue = () => {
 
     const reseted = radioButtonsData.map((option) => {

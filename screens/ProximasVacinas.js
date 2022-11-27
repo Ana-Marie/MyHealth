@@ -1,11 +1,34 @@
 
-import React from 'react';
+import React, { useState,useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, Image } from 'react-native';
 import Header from '../components/Header';
 import NextVaccineCard from '../components/NextVaccineCard';
-import { useVacineStore } from '../store/vacinas';
+import { useSelector } from 'react-redux'
+import { db } from '../config/firebase'
+import { onSnapshot, query, collection,doc } from 'firebase/firestore';
 const App = (props) => {
-  const { vaccines } = useVacineStore();
+  
+  const[vaccines,setVaccines]=useState([]);
+  const userDocID = useSelector((state) => state.user.userID);
+  let userDocRef = doc(db, 'users', userDocID);
+  const q = query(collection(userDocRef, "vaccines"));
+  useEffect(() => {
+    onSnapshot(q, (result) => {
+      const listaVacinas = []
+      result.forEach((vacina) => {
+        listaVacinas.push({
+          id:vacina.id,
+          vaccineName:vacina.data().vaccineName,
+          vaccinationDate: vacina.data().vaccinationDate,
+          dose: vacina.data().dose,
+          nextVaccination: vacina.data().nextVaccination,
+          comprovante:vacina.data().comprovante,
+          pathComprovante:vacina.data().pathComprovante
+        })
+      })
+      setVaccines(listaVacinas)
+    })
+  }, [])
   const   filter=( )=>{
     const result = vaccines.filter((item)=>item.nextVaccination!=='');
     return result;
