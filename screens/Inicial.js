@@ -6,17 +6,32 @@ import LinearGradient from 'react-native-linear-gradient';
 import { useUserStore } from '../store/usuario';
 import GreenButton from '../components/GreenButton';
 import { signInWithEmailAndPassword } from 'firebase/auth'
-import { auth } from '../config/firebase'
+import { auth,db } from '../config/firebase'
+import { reducerSetUser } from '../redux/userSlice';
+import { useDispatch } from 'react-redux'
+import { collection, query, where, getDocs } from "firebase/firestore"
+
 
 
 const Inicial = (props) => {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const { fazerLogin } = useUserStore()
+  const dispatch = useDispatch();
   const autenticarUsuario = () => {
     signInWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
+    .then(async(userCredential) => {
+    
+        const q = query(collection(db, "users"), where("userUID", "==", userCredential.user.uid));
+        const querySnapshot = await getDocs(q);
+        var usersMatch=[];
+        querySnapshot.forEach((doc) => {
+          usersMatch.push(doc)
       
+        });
+        let userID= usersMatch[0].id;
+    
+        dispatch(reducerSetUser({ email: email,userID}))
         console.log("Usuário autenticado com sucesso!")
         goToHome();
     })

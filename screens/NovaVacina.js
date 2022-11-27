@@ -1,5 +1,5 @@
 
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, DrawerLayoutAndroidBase } from 'react-native';
 import { launchImageLibrary } from 'react-native-image-picker';
 import Header from '../components/Header';
@@ -9,9 +9,9 @@ import RadioGroup from 'react-native-radio-buttons-group';
 import GreenButton from '../components/GreenButton';
 import { useVacineStore } from '../store/vacinas';
 import { db, storage } from '../config/firebase';
-import { addDoc, collection, getDoc, doc, updateDoc, deleteDoc } from "firebase/firestore"
-import { uploadBytes,ref, getDownloadURL } from 'firebase/storage';
-
+import { addDoc, collection, doc, updateDoc, deleteDoc, query, where, onSnapshot, getDocs } from "firebase/firestore"
+import { uploadBytes, ref, getDownloadURL } from 'firebase/storage';
+import { useSelector } from 'react-redux'
 
 
 
@@ -28,7 +28,7 @@ const radioButtonsData = [{
   color: 'rgba(65, 158, 215, 1)',
   borderColor: 'white',
   size: 12,
-  selected:false,
+  selected: false,
 },
 {
   id: '2',
@@ -38,14 +38,14 @@ const radioButtonsData = [{
     color: 'white',
     fontFamily: 'AveriaLibre-Regular',
     fontSize: 12,
-   
+
 
   },
 
   color: 'rgba(65, 158, 215, 1)',
   borderColor: 'white',
   size: 12,
-  selected:false,
+  selected: false,
 },
 {
   id: '3',
@@ -55,13 +55,13 @@ const radioButtonsData = [{
     color: 'white',
     fontFamily: 'AveriaLibre-Regular',
     fontSize: 12,
-    
+
   },
 
   color: 'rgba(65, 158, 215, 1)',
   borderColor: 'white',
   size: 12,
-  selected:false,
+  selected: false,
 },
 {
   id: '4',
@@ -71,13 +71,13 @@ const radioButtonsData = [{
     color: 'white',
     fontFamily: 'AveriaLibre-Regular',
     fontSize: 12,
-    
+
   },
 
   color: 'rgba(65, 158, 215, 1)',
   borderColor: 'white',
   size: 12,
-  selected:false,
+  selected: false,
 }]
 
 
@@ -88,17 +88,19 @@ const NovaVacina = (props) => {
   const [comprovante, setComprovante] = useState('empty');
   const [vaccinationDate, setVaccinationDate] = useState('');
   const [nextVaccinationDate, setNextVaccinationDate] = useState('');
- // const {addVaccine,vaccines } = useVacineStore();
+  const userDocID = useSelector((state) => state.user.userID);
+
+  // const {addVaccine,vaccines } = useVacineStore();
   const resetRadioButtonsValue = () => {
-    
+
     const reseted = radioButtonsData.map((option) => {
-      
+
       return {
         id: option.id,
         label: option.label,
         value: option.value,
         labelStyle: {
-          color:option.labelStyle.color,
+          color: option.labelStyle.color,
           fontFamily: option.labelStyle.fontFamily,
           fontSize: option.labelStyle.fontSize,
         },
@@ -106,27 +108,27 @@ const NovaVacina = (props) => {
         borderColor: option.borderColor,
         size: option.size,
         selected: false,
-        
+
       }
-      
-      
+
+
     });
-    
-    
+
+
     return reseted;
-    
+
   }
   const resetedRadiButton = resetRadioButtonsValue();
   const [radioButtons, setRadioButtons] = useState(resetedRadiButton);
-  
-  
-  
- 
-  
-  
-  const getRadioButtonsValue = ()=>{
-  
-    const selected = radioButtons.filter((option)=>option.selected);
+
+
+
+
+
+
+  const getRadioButtonsValue = () => {
+
+    const selected = radioButtons.filter((option) => option.selected);
     return selected[0].label;
   }
 
@@ -145,43 +147,46 @@ const NovaVacina = (props) => {
     
    
   }*/
+
   
-  const cadastrarVacina = async (userVacs)=>{
+ 
+  const cadastrarVacina = async () => {
+
     const data = await fetch(comprovante);
     const blob = await data.blob();
-    const fileName = 'MyHealth/proofs/'+comprovante.split('-')[comprovante.split('-').length -1];
-    uploadBytes(ref(storage,fileName),blob)
-    .then((result)=>{
-      getDownloadURL(ref(storage,fileName)).then((url)=>{
-      let userDocRef = doc(db,'users','4z6hSv5nmduI7HiqF7xL') ;
-   
-      addDoc(collection(userDocRef, "vaccines"), {
-      vaccineName: vaccineName,
-      vaccinationDate: vaccinationDate,
-      dose: getRadioButtonsValue(),
-      nextVaccination: nextVaccinationDate,
-      comprovante: url,
-      pathComprovante:fileName,
+    const fileName = 'MyHealth/proofs/' + comprovante.split('-')[comprovante.split('-').length - 1];
+    uploadBytes(ref(storage, fileName), blob)
+      .then((result) => {
+        getDownloadURL(ref(storage, fileName)).then((url) => {
+          let userDocRef = doc(db, 'users', userDocID);
 
-      })
-          .then((result) => {
+          addDoc(collection(userDocRef, "vaccines"), {
+            vaccineName: vaccineName,
+            vaccinationDate: vaccinationDate,
+            dose: getRadioButtonsValue(),
+            nextVaccination: nextVaccinationDate,
+            comprovante: url,
+            pathComprovante: fileName,
+
+          })
+            .then((result) => {
               //props.navigation.pop()
               alert('Vacina cadastrado com sucesso!');
               props.navigation.navigate('Minhas Vacinas');
-          })
-          .catch((error) => {
+            })
+            .catch((error) => {
               alert(error)
-          })
+            })
 
+        })
+
+        console.log('arquivo enviado com sucesso !')
+      })
+      .catch((error) => {
+        alert("Erro ao enviar o arquivo: " + error)
       })
 
-      console.log('arquivo enviado com sucesso !')
-    })
-    .catch((error)=>{
-      alert("Erro ao enviar o arquivo: "+error)
-    })
-    
-  
+
   }
 
   const onPressRadioButton = (radioButtonsArray) => {
@@ -199,7 +204,7 @@ const NovaVacina = (props) => {
     }
 
   }
-  
+
 
   return (
     <View style={{ flex: 1 }}>
@@ -221,15 +226,15 @@ const NovaVacina = (props) => {
           </TouchableOpacity>
         </View>
         <View style={styles.img}>
-          {comprovante == 'empty' ? <View style={{ height:'100%'}}>
-          <Text style={{fontFamily:'AveriaLibre-Regular', color:'gray', fontSize:16,textAlign:'center', marginTop:5,}} >Faça upload do comprovante</Text>
-            <Image  style={{width:'45%',height:'60%',alignSelf:'center',marginTop:10,opacity:0.2}}source={require('../images/upload-arrow.png')}></Image>
+          {comprovante == 'empty' ? <View style={{ height: '100%' }}>
+            <Text style={{ fontFamily: 'AveriaLibre-Regular', color: 'gray', fontSize: 16, textAlign: 'center', marginTop: 5, }} >Faça upload do comprovante</Text>
+            <Image style={{ width: '45%', height: '60%', alignSelf: 'center', marginTop: 10, opacity: 0.2 }} source={require('../images/upload-arrow.png')}></Image>
 
 
 
           </View>
-          :
-           <Image source={{ uri: comprovante }} style={{ width: '100%', height: '100%' }} />}
+            :
+            <Image source={{ uri: comprovante }} style={{ width: '100%', height: '100%' }} />}
         </View>
         <View style={styles.calendarDatePicker}>
           <Text style={styles.label}>Próxima vacinação</Text>
@@ -329,14 +334,14 @@ const styles = StyleSheet.create({
 
   },
   img: {
-    backgroundColor:'#e8e5e3',
+    backgroundColor: '#e8e5e3',
     width: 200,
     height: 150,
     display: 'flex',
     marginVertical: 5,
     alignSelf: 'flex-end',
-    borderRadius:5,
-    
+    borderRadius: 5,
+
 
   }
 

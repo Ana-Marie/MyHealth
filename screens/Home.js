@@ -5,13 +5,15 @@ import CardVacina from '../components/CardVacinas';
 import Header from '../components/Header';
 import GreenButton from '../components/GreenButton';
 import { useVacineStore } from '../store/vacinas';
+import { useSelector } from 'react-redux'
 
 import { db } from '../config/firebase'
 import { onSnapshot, query, collection,doc } from 'firebase/firestore';
 const Home = (props) => {
  // const { vaccines } = useVacineStore()
+ const userDocID = useSelector((state) => state.user.userID);
   const [vaccineList, setVaccineList] = useState([]);
-  let userDocRef = doc(db, 'users', '4z6hSv5nmduI7HiqF7xL');
+  let userDocRef = doc(db, 'users', userDocID);
   const q = query(collection(userDocRef, "vaccines"));
 
   useEffect(() => {

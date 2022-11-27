@@ -1,15 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
 const initialValues = {
     email: null,
-    userUID: null,
+    userID: null,
 }
 export const userSlice = createSlice({
     name: 'user',
     initialState: initialValues,
     reducers: {
-        reducerSetVaccine: (state, action) => {
+        reducerSetUser: (state, action) => {
             state.email = action.payload.email
-            state.userUID=action.payload.userUID
+            state.userID=action.payload.userID
 
         }
     }

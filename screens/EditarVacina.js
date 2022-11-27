@@ -81,7 +81,8 @@ const EditarVacina = ({ navigation }) => {
   // const { vaccines, updateVaccine, removeVaccine } = useVacineStore();
   // const vaccine = vaccines[index];
   const vaccine = useSelector((state) => state.vaccine)
-  let userDocRef = doc(db, 'users', '4z6hSv5nmduI7HiqF7xL');
+  const userDocID = useSelector((state) => state.user.userID);
+  let userDocRef = doc(db, 'users', userDocID);
   const [isDialogVisible, setDialogVisible] = useState(false)
   const changeRadioButtonsValue = () => {
     const selected = radioButtonsData.map((option) => {
