@@ -24,7 +24,8 @@ const Home = (props) => {
           vaccinationDate: vacina.data().vaccinationDate,
           dose: vacina.data().dose,
           nextVaccination: vacina.data().nextVaccination,
-          comprovante:vacina.data().comprovante
+          comprovante:vacina.data().comprovante,
+          pathComprovante:vacina.data().pathComprovante
         })
       })
       setVaccineList(listaVacinas)

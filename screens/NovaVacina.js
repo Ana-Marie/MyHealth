@@ -88,7 +88,7 @@ const NovaVacina = (props) => {
   const [comprovante, setComprovante] = useState('empty');
   const [vaccinationDate, setVaccinationDate] = useState('');
   const [nextVaccinationDate, setNextVaccinationDate] = useState('');
-  const {addVaccine,vaccines } = useVacineStore();
+ // const {addVaccine,vaccines } = useVacineStore();
   const resetRadioButtonsValue = () => {
     
     const reseted = radioButtonsData.map((option) => {
@@ -161,8 +161,8 @@ const NovaVacina = (props) => {
       dose: getRadioButtonsValue(),
       nextVaccination: nextVaccinationDate,
       comprovante: url,
+      pathComprovante:fileName,
 
-        
       })
           .then((result) => {
               //props.navigation.pop()

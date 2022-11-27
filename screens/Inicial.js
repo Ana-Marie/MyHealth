@@ -16,6 +16,7 @@ const Inicial = (props) => {
   const autenticarUsuario = () => {
     signInWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
+      
         console.log("Usuário autenticado com sucesso!")
         goToHome();
     })

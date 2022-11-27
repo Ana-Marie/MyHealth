@@ -11,8 +11,9 @@ import { useVacineStore } from '../store/vacinas';
 import Dialog, { DialogContent } from 'react-native-popup-dialog';
 import DialogPopUp from '../components/DialogPopUp';
 import { useSelector } from 'react-redux';
-import { db } from '../config/firebase';
-import { onSnapshot, query, collection,doc,updateDoc, deleteDoc  } from 'firebase/firestore';
+import { db, storage } from '../config/firebase';
+import { onSnapshot, query, collection, doc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { uploadBytes, ref, deleteObject } from "firebase/storage"
 
 
 const radioButtonsData = [{
@@ -74,11 +75,11 @@ const radioButtonsData = [{
   size: 12,
   selected: false,
 }]
-const EditarVacina = ({ navigation}) => {
+const EditarVacina = ({ navigation }) => {
 
- // const { index } = route.params;
- // const { vaccines, updateVaccine, removeVaccine } = useVacineStore();
- // const vaccine = vaccines[index];
+  // const { index } = route.params;
+  // const { vaccines, updateVaccine, removeVaccine } = useVacineStore();
+  // const vaccine = vaccines[index];
   const vaccine = useSelector((state) => state.vaccine)
   let userDocRef = doc(db, 'users', '4z6hSv5nmduI7HiqF7xL');
   const [isDialogVisible, setDialogVisible] = useState(false)
@@ -111,7 +112,7 @@ const EditarVacina = ({ navigation}) => {
     return selected;
 
   }
-  
+
   if (vaccine) {
     const selected = changeRadioButtonsValue();
     var retorno = {
@@ -121,6 +122,7 @@ const EditarVacina = ({ navigation}) => {
       comprovante: vaccine.comprovante,
       vaccinationDate: vaccine.vaccinationDate,
       nextVaccinationDate: vaccine.nextVaccination,
+
     }
   } else {
     var retorno = {
@@ -137,9 +139,9 @@ const EditarVacina = ({ navigation}) => {
 
 
 
-  
 
-  
+
+
   const [vaccineName, setVaccineName] = useState(retorno.vaccineName);
   const [radioButtons, setRadioButtons] = useState(retorno.radioButtons);
   const [comprovante, setComprovante] = useState(retorno.comprovante);
@@ -150,19 +152,23 @@ const EditarVacina = ({ navigation}) => {
 
 
 
+
   const deleteVaccine = () => {
-   
-   
-   // removeVaccine(index);
-   deleteDoc(doc(userDocRef, "vaccines",vaccine.id))
+
+    deleteObject(ref(storage, vaccine.pathComprovante)).then(() => {
+      deleteDoc(doc(userDocRef, "vaccines", vaccine.id))
         .then(() => {
+          console.log('Vacina excluida com sucesso!')
           setDialogVisible(false);
           navigation.goBack();
         })
         .catch((error) => {
-            alert(error)
+          alert(error)
         })
-    
+
+    })
+
+
 
   }
 
@@ -194,19 +200,39 @@ const EditarVacina = ({ navigation}) => {
     return selected[0].label;
   }
 
-  const saveVaccine = () => {
+  const saveVaccine = async () => {
 
-    const vacinaObj = {
-      vaccineName: vaccineName,
-      vaccinationDate: vaccinationDate,
-      dose: getRadioButtonsValue(),
-      nextVaccination: nextVaccinationDate,
-      comprovante: comprovante,
-
-    }
-console.log({vacinaObj});
-    updateVaccine(vacinaObj, index)
-    navigation.goBack();
+    
+    // console.log({ vacinaObj });
+    //updateVaccine(vacinaObj, index)
+    const data = await fetch(comprovante)
+    const blob = await data.blob()
+    console.log(vaccine.pathComprovante);
+    uploadBytes(ref(storage,vaccine.pathComprovante), blob)
+      .then((result) => {
+        console.log(result);
+        const vacinaObj = {
+         // id:vaccine.id,
+          vaccineName: vaccineName,
+          vaccinationDate: vaccinationDate,
+          dose: getRadioButtonsValue(),
+          nextVaccination: nextVaccinationDate,
+          comprovante: comprovante,
+          pathComprovante:vaccine.pathComprovante,
+    
+    
+        }
+        updateDoc(doc(userDocRef, "vaccines", vaccine.id), vacinaObj)
+          .then((result) => {
+            alert('Vacina Atualizada com sucesso!');
+            navigation.goBack();
+          })
+          .catch((error) => {
+            alert('Erro atualizar dados:'+error)
+          })
+      }).catch((error) => {
+        alert('ERRO update comprovante:'+ error);
+      })
   }
 
 

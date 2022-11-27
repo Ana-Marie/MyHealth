@@ -6,6 +6,7 @@ const initialValues = {
     dose: null,
     nextVaccination: null,
     comprovante: null,
+    pathComprovante:null
 }
 export const vaccineSlice = createSlice({
     name: 'vaccine',
@@ -18,6 +19,7 @@ export const vaccineSlice = createSlice({
             state.dose= action.payload.dose,
             state.nextVaccination=action.payload.nextVaccination,
             state.comprovante=action.payload.comprovante
+            state.pathComprovante=action.payload.pathComprovante
 
         }
     }
