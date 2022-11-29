@@ -4,9 +4,7 @@ import { View, Text, StyleSheet, TextInput, Image, FlatList } from 'react-native
 import CardVacina from '../components/CardVacinas';
 import Header from '../components/Header';
 import GreenButton from '../components/GreenButton';
-import { useVacineStore } from '../store/vacinas';
 import { useSelector } from 'react-redux'
-
 import { db } from '../config/firebase'
 import { onSnapshot, query, collection,doc } from 'firebase/firestore';
 const Home = (props) => {
