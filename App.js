@@ -13,6 +13,7 @@ import DrawerMenu from './screens/DrawerMenu';
 import { useUserStore } from './store/usuario';
 import EditarVacina from './screens/EditarVacina';
 import NovaVacina from './screens/NovaVacina';
+import VaccineMap from'./screens/VaccineMap';
 import { Provider } from "react-redux"
 import { store } from "./redux/store"
 
@@ -39,7 +40,7 @@ const DrawerStack = () => {
       <Drawer.Screen name="Proximas Vacinas" component={ProximasVacinas} options={{ drawerIcon: () => (<Image source={require('./images/calendar1.png')} />) }} />
       <Drawer.Screen name="EditarVacina" component={EditarVacina} options={{ drawerItemStyle: { display: 'none' } }} />
       <Drawer.Screen name="NovaVacina" component={NovaVacina} options={{ drawerItemStyle: { display: 'none' } }} />
-
+      <Drawer.Screen name="Mapa Vacinas" component={VaccineMap} options={{ drawerItemStyle: { display: 'none' } }} />
     </Drawer.Navigator>
   )
 }

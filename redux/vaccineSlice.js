@@ -1,12 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
 const initialValues = {
     id:null,
-    vaccineName: null,
-    vaccinationDate: null,
+    vaccineName: '',
+    vaccinationDate: '',
     dose: null,
-    nextVaccination: null,
-    comprovante: null,
-    pathComprovante:null
+    nextVaccination:'',
+    comprovante:'empty',
+    pathComprovante:null,
+    latitude:0,
+    longitude:0,
 }
 export const vaccineSlice = createSlice({
     name: 'vaccine',
@@ -18,8 +20,10 @@ export const vaccineSlice = createSlice({
             state.vaccinationDate= action.payload.vaccinationDate,
             state.dose= action.payload.dose,
             state.nextVaccination=action.payload.nextVaccination,
-            state.comprovante=action.payload.comprovante
-            state.pathComprovante=action.payload.pathComprovante
+            state.comprovante=action.payload.comprovante,
+            state.pathComprovante=action.payload.pathComprovante,
+            state.latitude= action.payload.latitude,
+            state.longitude=action.payload.longitude
 
         }
     }

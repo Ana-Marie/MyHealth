@@ -10,7 +10,10 @@ import GreenButton from '../components/GreenButton';
 import { db, storage } from '../config/firebase';
 import { addDoc, collection, doc } from "firebase/firestore"
 import { uploadBytes, ref, getDownloadURL } from 'firebase/storage';
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { reducerSetVaccine } from '../redux/vaccineSlice';
+import Geolocation from '@react-native-community/geolocation'
+
 
 
 
@@ -83,11 +86,46 @@ const radioButtonsData = [{
 
 
 const NovaVacina = (props) => {
-  const [vaccineName, setVaccineName] = useState();
-  const [comprovante, setComprovante] = useState('empty');
-  const [vaccinationDate, setVaccinationDate] = useState('');
-  const [nextVaccinationDate, setNextVaccinationDate] = useState('');
+  const dispatch = useDispatch();
+  const vaccine = useSelector((state) => state.vaccine)
+
+ 
+  const [vaccineName, setVaccineName] = useState(vaccine.vaccineName);
+  const [comprovante, setComprovante] = useState(vaccine.comprovante);
+  const [vaccinationDate, setVaccinationDate] = useState(vaccine.vaccinationDate);
+  const [nextVaccinationDate, setNextVaccinationDate] = useState(vaccine.nextVaccination);
+ 
+
   const userDocID = useSelector((state) => state.user.userID);
+  const changeRadioButtonsValue = () => {
+    const selected = radioButtonsData.map((option) => {
+
+
+      return {
+        id: option.id,
+        label: option.label,
+        value: option.value,
+        labelStyle: {
+          color: option.labelStyle.color,
+          fontFamily: option.labelStyle.fontFamily,
+          fontSize: option.labelStyle.fontSize,
+        },
+        color: option.color,
+        borderColor: option.borderColor,
+        size: option.size,
+        selected: option.label == vaccine.dose,
+
+      }
+
+
+
+
+    });
+
+
+    return selected;
+
+  }
   const resetRadioButtonsValue = () => {
 
     const reseted = radioButtonsData.map((option) => {
@@ -116,11 +154,7 @@ const NovaVacina = (props) => {
 
   }
   const resetedRadiButton = resetRadioButtonsValue();
-  const [radioButtons, setRadioButtons] = useState(resetedRadiButton);
-
-
-
-
+  const [radioButtons, setRadioButtons] = useState(vaccine.dose?changeRadioButtonsValue():resetedRadiButton);
 
 
   const getRadioButtonsValue = () => {
@@ -128,24 +162,6 @@ const NovaVacina = (props) => {
     const selected = radioButtons.filter((option) => option.selected);
     return selected[0].label;
   }
-
-  /*const saveVaccine = () => {
-
-    const vacinaObj = {
-      vaccineName: vaccineName,
-      vaccinationDate: vaccinationDate,
-      dose: getRadioButtonsValue(),
-      nextVaccination: nextVaccinationDate,
-      comprovante: comprovante,
-
-    }
-    
-      addVaccine(vacinaObj);
-    
-   
-  }*/
-
-  
  
   const cadastrarVacina = async () => {
 
@@ -164,6 +180,8 @@ const NovaVacina = (props) => {
             nextVaccination: nextVaccinationDate,
             comprovante: url,
             pathComprovante: fileName,
+            latitude:vaccine.latitude,
+            longitude:vaccine.longitude
 
           })
             .then((result) => {
@@ -202,7 +220,22 @@ const NovaVacina = (props) => {
 
   }
 
+  const getLocation =   () => {
+    let vacina = {
+      vaccineName: vaccineName,
+      vaccinationDate: vaccinationDate,
+      dose:getRadioButtonsValue(),
+      nextVaccination: nextVaccinationDate,
+      comprovante: comprovante,
+      pathComprovante: vaccine.fileName,
+      latitude:vaccine.latitude,
+      longitude:vaccine.longitude
 
+    }
+    console.log(vacina)
+    dispatch(reducerSetVaccine(vacina))
+    props.navigation.navigate('Mapa Vacinas',{screenName:'NovaVacina'});
+  }
   return (
     <View style={{ flex: 1 }}>
       <Header text='Minhas vacinas' navigation={props.navigation} />
@@ -237,7 +270,13 @@ const NovaVacina = (props) => {
           <Text style={styles.label}>Próxima vacinação</Text>
           <CalendarDatePicker text={nextVaccinationDate} setText={setNextVaccinationDate} />
         </View>
+        <TouchableOpacity style={[styles.selectpicture, {padding: 5, width: 200, alignSelf: 'center', marginTop: 10}]} onPress={getLocation}>
+            <Text style={styles.label}>Capturar localização</Text>
+        </TouchableOpacity>
+ 
         <GreenButton title="Cadastrar" onPressEvent={cadastrarVacina}></GreenButton>
+
+
       </View>
 
 

@@ -31,7 +31,7 @@ const CardVacina =(props)=>{
    
     
     const goToEditarVacina = () => {
-        
+        console.log("Editar",{item})
         dispatch(reducerSetVaccine(item))
         navigation.navigate('EditarVacina');  
       }

@@ -4,15 +4,28 @@ import { View, Text, StyleSheet, TextInput, Image, FlatList } from 'react-native
 import CardVacina from '../components/CardVacinas';
 import Header from '../components/Header';
 import GreenButton from '../components/GreenButton';
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { reducerSetVaccine } from '../redux/vaccineSlice';
 import { db } from '../config/firebase'
 import { onSnapshot, query, collection,doc } from 'firebase/firestore';
+import Geolocation from '@react-native-community/geolocation'
 const Home = (props) => {
- // const { vaccines } = useVacineStore()
- const userDocID = useSelector((state) => state.user.userID);
+  const [latitude,setLatitude]= useState();
+  const [longitude,setLongitude] = useState();
+ useEffect( ()=>{
+    Geolocation.getCurrentPosition((position) => {
+      setLatitude(position.coords.latitude);
+      setLongitude(position.coords.longitude);
+    })
+},[])
+  
+  const dispatch = useDispatch();
+  const userDocID = useSelector((state) => state.user.userID);
   const [vaccineList, setVaccineList] = useState([]);
   let userDocRef = doc(db, 'users', userDocID);
   const q = query(collection(userDocRef, "vaccines"));
+ 
+  
 
   useEffect(() => {
     onSnapshot(q, (result) => {
@@ -25,7 +38,9 @@ const Home = (props) => {
           dose: vacina.data().dose,
           nextVaccination: vacina.data().nextVaccination,
           comprovante:vacina.data().comprovante,
-          pathComprovante:vacina.data().pathComprovante
+          pathComprovante:vacina.data().pathComprovante,
+          latitude:vacina.data().latitude,
+          longitude:vacina.data().longitude,
         })
       })
       setVaccineList(listaVacinas)
@@ -33,6 +48,19 @@ const Home = (props) => {
   }, [])
 
   const goToNovaVacina = () => {
+
+    let initialValues = {
+      id:null,
+      vaccineName: '',
+      vaccinationDate: '',
+      dose:null,
+      nextVaccination: '',
+      comprovante:'empty',
+      pathComprovante:null,
+      latitude:latitude,
+      longitude:longitude,
+  }
+    dispatch(reducerSetVaccine(initialValues));
     props.navigation.navigate('NovaVacina');
   }
   const [search, setSearch] = useState('');
@@ -77,11 +105,7 @@ const Home = (props) => {
           }
 
         </View>
-        <GreenButton title='Nova Vacina' onPressEvent={goToNovaVacina} />
-
-
-
-
+        <GreenButton title='Nova Vacina' onPressEvent={()=>{goToNovaVacina()}} />
 
       </View>
 

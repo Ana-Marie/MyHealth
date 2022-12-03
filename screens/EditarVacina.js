@@ -10,7 +10,8 @@ import GreenButton from '../components/GreenButton';
 import { useVacineStore } from '../store/vacinas';
 import Dialog, { DialogContent } from 'react-native-popup-dialog';
 import DialogPopUp from '../components/DialogPopUp';
-import { useSelector } from 'react-redux';
+import { useSelector,useDispatch } from 'react-redux';
+import { reducerSetVaccine } from '../redux/vaccineSlice';
 import { db, storage } from '../config/firebase';
 import { onSnapshot, query, collection, doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { uploadBytes, ref, deleteObject } from "firebase/storage"
@@ -80,6 +81,7 @@ const EditarVacina = ({ navigation }) => {
   // const { index } = route.params;
   // const { vaccines, updateVaccine, removeVaccine } = useVacineStore();
   // const vaccine = vaccines[index];
+  const dispatch=useDispatch();
   const vaccine = useSelector((state) => state.vaccine)
   const userDocID = useSelector((state) => state.user.userID);
   let userDocRef = doc(db, 'users', userDocID);
@@ -148,6 +150,26 @@ const EditarVacina = ({ navigation }) => {
   const [comprovante, setComprovante] = useState(retorno.comprovante);
   const [vaccinationDate, setVaccinationDate] = useState(retorno.vaccinationDate);
   const [nextVaccinationDate, setNextVaccinationDate] = useState(retorno.nextVaccinationDate);
+
+
+  const getLocation =   () => {
+    console.log('getLocation',{vaccine})
+    let vacina = {
+      id:vaccine.id,
+      vaccineName: vaccineName,
+      vaccinationDate: vaccinationDate,
+      dose:getRadioButtonsValue(),
+      nextVaccination: nextVaccinationDate,
+      comprovante: comprovante,
+      pathComprovante: vaccine.pathComprovante,
+      latitude:vaccine.latitude,
+      longitude:vaccine.longitude
+
+    }
+    dispatch(reducerSetVaccine(vacina))
+    navigation.navigate('Mapa Vacinas',{screenName:'EditarVacina'});
+    
+  }
 
 
 
@@ -220,6 +242,9 @@ const EditarVacina = ({ navigation }) => {
           nextVaccination: nextVaccinationDate,
           comprovante: comprovante,
           pathComprovante:vaccine.pathComprovante,
+          longitude:vaccine.latitude,
+          latitude:vaccine.longitude,
+          
     
     
         }
@@ -263,9 +288,12 @@ const EditarVacina = ({ navigation }) => {
           <Text style={styles.label}>Próxima vacinação</Text>
           <CalendarDatePicker text={nextVaccinationDate} setText={setNextVaccinationDate} />
         </View>
+        <TouchableOpacity style={[styles.selectpicture, {padding: 5, width: 200, alignSelf: 'center', marginTop: 10}]} onPress={getLocation}>
+            <Text style={styles.label}>Capturar localização</Text>
+        </TouchableOpacity>
         <GreenButton title="Salvar alterações" onPressEvent={saveVaccine}></GreenButton>
 
-        <TouchableOpacity style={[styles.button]} onPress={openDialog}>
+        <TouchableOpacity style={[styles.button,{bottom:30}]} onPress={openDialog}>
           <Image style={{ alignSelf: 'center', width: 22, height: 22 }} source={require('../images/trash.png')}></Image>
           <Text style={styles.buttonText}>Excluir</Text>
         </TouchableOpacity>
