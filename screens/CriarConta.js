@@ -11,6 +11,7 @@ import GreenButton from '../components/GreenButton';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth,db } from '../config/firebase';
 import { addDoc, collection, getDoc, doc, updateDoc, deleteDoc } from "firebase/firestore"
+import LoadingSpinner from '../components/LoadingSpinner';
 
 
 
@@ -49,14 +50,17 @@ const CriarConta = (props) => {
   const [repeatPassword, setRepeatPassword] = useState();
   const [radioButtons, setRadioButtons] = useState(radioButtonsData);
   const [DataNasc,setDataNasc] = useState();
+  const[isLoading,setIsLoading]=useState(false);
 
 
   const criarUsuario = () => {
+    setIsLoading(true);
     createUserWithEmailAndPassword(auth, email, password).then((userCredencial) => {
       console.log("Usuario adicionado com  sucessso!")
       const{uid} = userCredencial.user;
       console.log(uid);
       cadastrar(uid);
+      setIsLoading(false);
       goToInicial();
 
       
@@ -65,6 +69,7 @@ const CriarConta = (props) => {
     }).catch((error) => {
       console.log("Ocorreu um erro ao cadastrar usuário")
       console.log("Erro: " + error.message)
+      setIsLoading(false);
     })
   }
   
@@ -106,9 +111,12 @@ const CriarConta = (props) => {
 
   
 
+if(isLoading){
+  return(
+    <LoadingSpinner msg ="Aguarde. Cadastrando Usuário..."/>
+  )
 
-
-
+}else{
 
   return (
     <View style={styles.screen}>
@@ -143,7 +151,7 @@ const CriarConta = (props) => {
     </View>
   )
 
-
+  }
 }
 const styles = StyleSheet.create({
   form: {

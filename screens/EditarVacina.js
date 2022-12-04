@@ -15,6 +15,7 @@ import { reducerSetVaccine } from '../redux/vaccineSlice';
 import { db, storage } from '../config/firebase';
 import { onSnapshot, query, collection, doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { uploadBytes, ref, deleteObject } from "firebase/storage"
+import LoadingSpinner from '../components/LoadingSpinner';
 
 
 const radioButtonsData = [{
@@ -86,6 +87,8 @@ const EditarVacina = ({ navigation }) => {
   const userDocID = useSelector((state) => state.user.userID);
   let userDocRef = doc(db, 'users', userDocID);
   const [isDialogVisible, setDialogVisible] = useState(false)
+  const[isLoading,setIsLoading]=useState(false);
+  const[texto,setTexto]=useState('');
   const changeRadioButtonsValue = () => {
     const selected = radioButtonsData.map((option) => {
 
@@ -177,15 +180,19 @@ const EditarVacina = ({ navigation }) => {
 
 
   const deleteVaccine = () => {
+    setTexto('Excluindo Vacina...')
+    setIsLoading(true);
 
     deleteObject(ref(storage, vaccine.pathComprovante)).then(() => {
       deleteDoc(doc(userDocRef, "vaccines", vaccine.id))
         .then(() => {
           console.log('Vacina excluida com sucesso!')
+          setIsLoading(false);
           setDialogVisible(false);
           navigation.goBack();
         })
         .catch((error) => {
+          setIsLoading(false);
           alert(error)
         })
 
@@ -224,6 +231,8 @@ const EditarVacina = ({ navigation }) => {
   }
 
   const saveVaccine = async () => {
+    setTexto('Atualizando Vacina...')
+    setIsLoading(true);
 
     
     // console.log({ vacinaObj });
@@ -250,17 +259,25 @@ const EditarVacina = ({ navigation }) => {
         }
         updateDoc(doc(userDocRef, "vaccines", vaccine.id), vacinaObj)
           .then((result) => {
+            setIsLoading(false);
             alert('Vacina Atualizada com sucesso!');
+
             navigation.goBack();
           })
           .catch((error) => {
+            setIsLoading(false);
             alert('Erro atualizar dados:'+error)
           })
       }).catch((error) => {
+        setIsLoading(false);
         alert('ERRO update comprovante:'+ error);
       })
   }
-
+if(isLoading){
+  return(
+    <LoadingSpinner msg={texto}/>
+  )
+}
 
   return (
     <View style={{ flex: 1 }}>

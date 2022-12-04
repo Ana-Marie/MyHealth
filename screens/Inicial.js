@@ -10,15 +10,19 @@ import { auth,db } from '../config/firebase'
 import { reducerSetUser } from '../redux/userSlice';
 import { useDispatch } from 'react-redux'
 import { collection, query, where, getDocs } from "firebase/firestore"
+import LoadingSpinner from '../components/LoadingSpinner';
 
 
 
 const Inicial = (props) => {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
+  const[displayErrorMessage,setDisplayErrorMessage]=useState(0);
+  const[isLoading,setIsLoading]=useState(false);
   const { fazerLogin } = useUserStore()
   const dispatch = useDispatch();
   const autenticarUsuario = () => {
+    setIsLoading(true);
     signInWithEmailAndPassword(auth, email, password)
     .then(async(userCredential) => {
     
@@ -32,11 +36,14 @@ const Inicial = (props) => {
         let userID= usersMatch[0].id;
     
         dispatch(reducerSetUser({ email: email,userID}))
+        setIsLoading(false);
         console.log("Usuário autenticado com sucesso!")
         goToHome();
     })
     .catch( (error) => {
         console.log("Falha ao autenticar: " + error.message)
+        setIsLoading(false);
+        setDisplayErrorMessage(15);
     })
 }
 
@@ -50,37 +57,44 @@ const Inicial = (props) => {
     props.navigation.push('RedefinirSenha');
 
   }
+  if(isLoading){
+    return(
+      <LoadingSpinner msg = 'Autentiticando...'/>
 
-  return (
+    )
 
-    <ImageBackground source={require('../images/Background_Inicial.jpg')} style={styles.background}>
-      <LinearGradient colors={['rgba(84, 131, 126, 0.2) ', ' rgba(255, 255, 255, 0.62)', 'rgba(221, 230, 229, 0.68)', 'rgba(59, 94, 90, 0.51)']} start={{ x: 150, y: 512 }} end={{ x: 450, y: 512 }} style={styles.overlay}>
-        <View style={[styles.logo]} >
-          <Image source={require('../images/icon-vaccine.png')} />
-          <Text style={styles.logoTexto}>MyHealth</Text>
-        </View>
-        <Text style={styles.texto}> Controle as suas vacinas e fique seguro</Text>
-        <View style={styles.form}>
-          <Input label="Email" placeholder="Digite o seu email..." keyboardType='email-address' value={email} setText={setEmail} hidePassword={false} labelStyle={styles.label} textInputStyle={styles.textInput} />
-          <Input label="Senha" placeholder="Digite a sua senha..." keyboardType='default' value={password} setText={setPassword} hidePassword={true} labelStyle={styles.label} textInputStyle={styles.textInput} />
-          <Text style={styles.errorMsg}>E-mail e/ou senha inválidos</Text>
-          <GreenButton title="Entrar" onPressEvent={autenticarUsuario} />
-
-        </View>
-        <TouchableOpacity style={[styles.createAcount, styles.shadowProp, styles.elevation]} onPress={goToCriarConta}>
-          <Text style={styles.buttonText}>Criar minha conta</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity  style={[styles.forgotPas,styles.shadowProp,styles.elevation]} onPress={goToRedefinirSenha}>
-            <Text style={styles.buttonText}>esqueci minha senha</Text>
+  }else{
+    return(
+      <ImageBackground source={require('../images/Background_Inicial.jpg')} style={styles.background}>
+        <LinearGradient colors={['rgba(84, 131, 126, 0.2) ', ' rgba(255, 255, 255, 0.62)', 'rgba(221, 230, 229, 0.68)', 'rgba(59, 94, 90, 0.51)']} start={{ x: 150, y: 512 }} end={{ x: 450, y: 512 }} style={styles.overlay}>
+          <View style={[styles.logo]} >
+            <Image source={require('../images/icon-vaccine.png')} />
+            <Text style={styles.logoTexto}>MyHealth</Text>
+          </View>
+          <Text style={styles.texto}> Controle as suas vacinas e fique seguro</Text>
+          <View style={styles.form}>
+            <Input label="Email" placeholder="Digite o seu email..." keyboardType='email-address' value={email} setText={setEmail} hidePassword={false} labelStyle={styles.label} textInputStyle={styles.textInput} />
+            <Input label="Senha" placeholder="Digite a sua senha..." keyboardType='default' value={password} setText={setPassword} hidePassword={true} labelStyle={styles.label} textInputStyle={styles.textInput} />
+            <Text style={[styles.errorMsg,{fontSize:displayErrorMessage}]}>E-mail e/ou senha inválidos</Text>
+            <GreenButton title="Entrar" onPressEvent={autenticarUsuario} />
+  
+          </View>
+          <TouchableOpacity style={[styles.createAcount, styles.shadowProp, styles.elevation]} onPress={goToCriarConta}>
+            <Text style={styles.buttonText}>Criar minha conta</Text>
           </TouchableOpacity>
+  
+          <TouchableOpacity  style={[styles.forgotPas,styles.shadowProp,styles.elevation]} onPress={goToRedefinirSenha}>
+              <Text style={styles.buttonText}>esqueci minha senha</Text>
+            </TouchableOpacity>
+  
+        </LinearGradient>
+      </ImageBackground>
+     
+  
+    )
 
-      </LinearGradient>
-    </ImageBackground>
-
-  )
-
-
+  }
+  
 }
 
 const styles = StyleSheet.create({

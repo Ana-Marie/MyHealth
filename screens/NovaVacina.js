@@ -13,6 +13,7 @@ import { uploadBytes, ref, getDownloadURL } from 'firebase/storage';
 import { useDispatch, useSelector } from 'react-redux'
 import { reducerSetVaccine } from '../redux/vaccineSlice';
 import Geolocation from '@react-native-community/geolocation'
+import LoadingSpinner from '../components/LoadingSpinner';
 
 
 
@@ -94,6 +95,7 @@ const NovaVacina = (props) => {
   const [comprovante, setComprovante] = useState(vaccine.comprovante);
   const [vaccinationDate, setVaccinationDate] = useState(vaccine.vaccinationDate);
   const [nextVaccinationDate, setNextVaccinationDate] = useState(vaccine.nextVaccination);
+  const[isLoading,setIsLoading]=useState(false);
  
 
   const userDocID = useSelector((state) => state.user.userID);
@@ -164,6 +166,7 @@ const NovaVacina = (props) => {
   }
  
   const cadastrarVacina = async () => {
+    setIsLoading(true);
 
     const data = await fetch(comprovante);
     const blob = await data.blob();
@@ -187,18 +190,22 @@ const NovaVacina = (props) => {
             .then((result) => {
               //props.navigation.pop()
               alert('Vacina cadastrado com sucesso!');
+              setIsLoading(false);
               props.navigation.navigate('Minhas Vacinas');
             })
             .catch((error) => {
+              setIsLoading(false);
               alert(error)
+
             })
 
         })
-
+        
         console.log('arquivo enviado com sucesso !')
       })
       .catch((error) => {
         alert("Erro ao enviar o arquivo: " + error)
+        setIsLoading(false);
       })
 
 
@@ -235,6 +242,11 @@ const NovaVacina = (props) => {
     console.log(vacina)
     dispatch(reducerSetVaccine(vacina))
     props.navigation.navigate('Mapa Vacinas',{screenName:'NovaVacina'});
+  }
+  if(isLoading){
+    return(
+      <LoadingSpinner msg=" Salvando vacina..."/>
+    )
   }
   return (
     <View style={{ flex: 1 }}>

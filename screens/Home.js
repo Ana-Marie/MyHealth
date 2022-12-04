@@ -9,9 +9,11 @@ import { reducerSetVaccine } from '../redux/vaccineSlice';
 import { db } from '../config/firebase'
 import { onSnapshot, query, collection,doc } from 'firebase/firestore';
 import Geolocation from '@react-native-community/geolocation'
+import LoadingSpinner from '../components/LoadingSpinner';
 const Home = (props) => {
   const [latitude,setLatitude]= useState();
   const [longitude,setLongitude] = useState();
+  const[isLoading,setIsLoading]=useState(true);
  useEffect( ()=>{
     Geolocation.getCurrentPosition((position) => {
       setLatitude(position.coords.latitude);
@@ -44,6 +46,7 @@ const Home = (props) => {
         })
       })
       setVaccineList(listaVacinas)
+      setIsLoading(false)
     })
   }, [])
 
@@ -79,8 +82,11 @@ const Home = (props) => {
 
   }*/
 
-
-
+  if(isLoading){
+    return(
+    <LoadingSpinner msg="carregando..."/>
+    )
+  }
 
   return (
     <View style={{ flex: 1 }}>
